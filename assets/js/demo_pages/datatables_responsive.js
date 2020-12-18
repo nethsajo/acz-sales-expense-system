@@ -28,15 +28,10 @@ var DatatableResponsive = function() {
         $.extend( $.fn.dataTable.defaults, {
             autoWidth: false,
             responsive: true,
-            columnDefs: [{ 
-                orderable: false,
-                width: 100,
-                targets: [ 5 ]
-            }],
             dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
             language: {
-                search: '<span>Filter:</span> _INPUT_',
-                searchPlaceholder: 'Search',
+                search: '<span>Search:</span> _INPUT_',
+                searchPlaceholder: 'Search...',
                 lengthMenu: '<span>Show:</span> _MENU_',
                 paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
             }

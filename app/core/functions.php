@@ -14,8 +14,8 @@
 		return password_hash($password, PASSWORD_DEFAULT);
 	}
 
-	function notify($data) {
-		echo json_encode(['success'=>$data[0],'bgcolor'=>$data[1],'color'=>$data[2],'message'=>$data[3]]);
+	function notify($type,$message,$success) {
+		echo json_encode(['type' => $type, 'message' => $message, 'success' => $success]);
 	}
 
 	function error_message($data){
@@ -23,7 +23,6 @@
 		foreach ( $data as $message )
 		echo "$message\n";
 		echo '</div>';
-	 
 	}
 
 	function success_message($data){

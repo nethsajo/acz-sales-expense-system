@@ -11,6 +11,11 @@
             $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_role_id = $role");
             return $query->num_rows;
         }
+
+        public function get_roles() {
+            $query = $this->db->query("SELECT * FROM tbl_roles");
+            return $query;
+        }
 		
 		public function get_user_information($employee_id) {
 			$query = $this->db->query("SELECT * FROM tbl_accounts AS ta INNER JOIN tbl_roles AS tr ON ta.employee_role_id = tr.role_id WHERE employee_id = $employee_id");
@@ -23,21 +28,25 @@
 			$check = $this->db->query("SELECT * FROM tbl_accounts AS ta INNER JOIN tbl_roles AS tr ON ta.employee_role_id = tr.role_id WHERE ta.employee_number = '$account_number'");
 			if($check->num_rows > 0) {
 				$row = $check->fetch_object();
-				$employee_role_id = $row->employee_role_id;
+                $employee_role_id = $row->employee_role_id;
+                $employee_status = $row->employee_status;
 				$employee_hash_password = $row->employee_password;
-				if(verify($account_password, $employee_hash_password) && $employee_role_id == 1) {
+				if(verify($account_password, $employee_hash_password) && $employee_role_id == 1 && $employee_status == 'Active') {
 					$_SESSION['account_id'] = $row->employee_id;
 					echo json_encode(['url' => URL.'admin/dashboard','success' => true]);
-				} elseif(verify($account_password, $employee_hash_password) && $employee_role_id == 2) {
+				} elseif(verify($account_password, $employee_hash_password) && $employee_role_id == 2 && $employee_status == 'Active') {
 					$_SESSION['account_id'] = $row->employee_id;
 					echo json_encode(['url' => URL.'employee/index','success' => true]);
-				} else {
+                } elseif(verify($account_password, $employee_hash_password) && $employee_status == 'Not Active') {
+                    $message = 'Your account is not active yet. Contact the admin to activate your account.';
+                    notify('error', $message, false);
+                } else {
 					$message = 'Your employee number or password was entered incorrectly.';
-                    notify([false, '#d32f2f', '#ffffff', $message]);
+                    notify('error', $message, false);
 				}
 			} else {
 				$message = 'Your employee number or password was entered incorrectly.';
-                notify([false, '#d32f2f', '#ffffff', $message]);
+                notify('error', $message, false);
 			}
 		}
 
@@ -50,7 +59,7 @@
                 $security_code 	= $row->employee_security_code;
                 if($forgot_password_email != $row->employee_email) {
                     $message = 'Email not found!';
-                    notify([false,'#d32f2f','#fff',$message]);
+                    notify('error', $message, false);
                 } else {
                     $SMTP_query = $this->db->query("SELECT * FROM tbl_smtp_server WHERE smtp_status = 0");
                     $SMTP_check = $SMTP_query->num_rows;
@@ -101,19 +110,19 @@
 
                         if($mail->send()) {
                             $message = "Email has been sent!";
-                            notify([true, '#4caf50', '#ffffff', $message]);
+                            notify('success', $message, true);
                         } else {
                             $message = "Email could not be sent. Please check your internet connection.";
-                            notify([false, '#d32f2f', '#ffffff', $message]);
+                            notify('error', $message, false);
                         }
                     } else {
                         $message = 'Please confifure SMTP server.';
-                        notify([false,'#d32f2f','#fff',$message]);
+                        notify('error', $message, false);
                     }
                 }
             } else {
                 $message = 'Email not found!';
-                notify([false,'#d32f2f','#fff',$message]);
+                notify('error', $message, false);
             }
 		}
 
@@ -127,7 +136,7 @@
                 echo json_encode(['url' => URL.'login/reset','success' => true]);
             } else {
                 $message = 'Invalid Security Code!';
-                notify([false,'#d32f2f','#fff',$message]);
+                notify('error', $message, false);
             }
 		}
 
@@ -151,7 +160,78 @@
 			
 			$_SESSION['message'] = 'Your account is now recovered!';
 			echo json_encode(['url' => URL.'login','success' => true]);
-		}
+        }
+        
+        public function generate_employee_number() {
+            $query = $this->db->query("SELECT MAX(CAST(SUBSTR(employee_number, 5) AS SIGNED)) + 1 AS num_rows FROM tbl_accounts WHERE employee_number LIKE 'ACZ20%'");
+            $row = $query->fetch_object();
+            $number = $row->num_rows;
+            
+            $employee_number = 'ACZ'. date("y") . $number;
+
+            echo json_encode(['employee_number' => $employee_number]);
+        }
+
+        public function employees($data) {
+            $employee_id			= $data['employee_id'];
+            $employee_surname		= $data['employee_surname'];
+            $employee_firstname		= $data['employee_firstname'];
+            $employee_middlename	= $data['employee_middlename'];
+            $employee_number		= $data['employee_number'];
+            $employee_password    	= $data['employee_password'];
+            $employee_email       	= $data['employee_email'];
+            $employee_contact    	= $data['employee_contact'];
+            $employee_address     	= $data['employee_address'];
+            $employee_birthdate		= $data['employee_birthdate'];
+            $employee_gender      	= $data['employee_gender'];
+            $employee_role        	= $data['employee_role'];
+            $employee_status      	= $data['employee_status'];
+            $employee_security_code	= $data['employee_security_code'];
+
+            if(empty($employee_id)) {
+                $check = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_surname = '$employee_surname' AND employee_firstname = '$employee_firstname' AND employee_middlename = '$employee_middlename'");
+                if($check->num_rows > 0) {
+                    $message = 'User is already exist.';
+                    notify('error', $message, false);
+                } else {
+                    $query = $this->db->query("INSERT INTO tbl_accounts (employee_surname, employee_firstname, employee_middlename, employee_number, employee_password, employee_email, employee_contact, employee_address, employee_birthdate, employee_gender, employee_status, employee_role_id, employee_security_code) 
+                    VALUES('$employee_surname', '$employee_firstname', '$employee_middlename', '$employee_number', '$employee_password', '$employee_email', '$employee_contact', '$employee_address', '$employee_birthdate', '$employee_gender', '$employee_status', $employee_role, $employee_security_code)");
+                    $message = $employee_firstname.' '.$employee_surname .' has been added.';
+                    notify('success', $message, true);
+                }
+            } else {
+                $message = 'User has been updated.';
+                $query = $this->db->query("UPDATE tbl_accounts SET employee_surname = '$employee_surname', employee_firstname = '$employee_firstname', employee_middlename ='$employee_middlename',
+                employee_email = '$employee_email', employee_contact = '$employee_contact', employee_address = '$employee_address', employee_birthdate = '$employee_birthdate', employee_gender = '$employee_gender', employee_role_id = $employee_role
+                WHERE employee_id = $employee_id");
+                notify('success', $message, true);
+            }
+        }
+
+        public function employee_status($data) {
+            $employee_status_id = $data['employee_status_id'];
+            $employee_status    = $data['employee_status'];
+
+            $query = $this->db->query("UPDATE tbl_accounts SET employee_status = '$employee_status' WHERE employee_id = $employee_status_id");
+            $message = "Status has been updated!";
+            notify('success', $message, true);
+        }
+
+        public function delete_employees_by_id($employee_delete_id) {
+            $query = $this->db->query("DELETE FROM tbl_accounts WHERE employee_id = $employee_delete_id");
+            $message = "Employee has been deleted.";
+            notify('info', $message, true);
+        }
+
+        public function get_all_employees($employee_role_id) {
+            $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_role_id = $employee_role_id");
+            return $query;
+        }
+
+        public function get_employee_information_by_id($employee_id) {
+            $query = $this->db->query("SELECT * FROM tbl_accounts AS ta INNER JOIN tbl_roles AS tr ON ta.employee_role_id = tr.role_id WHERE ta.employee_id = $employee_id");
+            echo json_encode($query->fetch_object());
+        }
 		
 		public function post($data) {
 			$query = $this->db->real_escape_string(htmlentities($_POST[$data]));

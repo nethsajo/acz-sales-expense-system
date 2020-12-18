@@ -16,6 +16,7 @@
         <link href="<?=ASSETS?>css/layout.min.css" rel="stylesheet" type="text/css">
         <link href="<?=ASSETS?>css/components.min.css" rel="stylesheet" type="text/css">
         <link href="<?=ASSETS?>css/colors.min.css" rel="stylesheet" type="text/css">
+        <link href="<?=ASSETS?>toastr/css/toastr.min.css" rel="stylesheet" type="text/css">
         <!-- /Stylesheets -->
         <!-- Amaran Notification  -->
         <link href="<?=ASSETS?>css/parsley/parsley.css" rel="stylesheet" type="text/css" />
@@ -78,6 +79,7 @@
         <script type="text/javascript" src="<?=ASSETS?>functions/ajax.js"></script>
 		<script type="text/javascript" src="<?=ASSETS?>angular/1.4.8.angular.min.js"></script>
 		<script type="text/javascript" src="<?=ASSETS?>angular/1.4.2.angular.min.js"></script>
+        <script type="text/javascript" src="<?=ASSETS?>toastr/js/toastr.min.js"></script>
         <!--/Functions JavaScript-->
 
         <!--Parsley Validation-->
@@ -89,7 +91,8 @@
         <!-- /Amaran Notification-->
         <script type="text/javascript">
             var app = angular.module('app', ['ngMessages']);
-			app.controller('mainController',function($scope){});
+            app.controller('mainController',function($scope){});
+            toastr_option();
         </script>
     </body>
 </html>
