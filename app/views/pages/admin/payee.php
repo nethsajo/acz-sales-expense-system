@@ -22,9 +22,9 @@
 	</div>
 
 	<div class="content">
-		<button id="button_expense_payee" class="btn bg-green mb-3" onclick="modal_expense_payee()"><i class="icon-cash mr-2"></i><b> ADD NEW PAYEE</b></button>
+		<button onclick="payee_modal()" id="btn-payee" class="btn bg-green mb-3"><i class="icon-plus3 mr-2"></i><b> ADD NEW PAYEE</b></button>
 		<div class="card">
-			<table id="show-expense-payee-table" class="table datatable-basic">
+			<table id="show-expense-payee-table" class="table datatable-responsive">
 				<thead>
 					<tr>
 						<th>#</th>
@@ -33,49 +33,66 @@
 						<th>&nbsp;</th>
 					</tr>
 				</thead>
-				<tbody id="show_expense_payee_table" ><!--content will go here--></tbody>
+				<tbody>
+					<?php foreach($data['payee'] as $row) { ?> 
+						<tr>
+							<td><?=$row['payee_id'];?></td> 
+							<td><?=$row['payee_name'];?></td>
+							<td style="text-align:center"><a onclick="view_payee('<?=$row['payee_id']?>')" style="cursor:pointer" alt="Edit"><i class="icon-pencil text-info-800"></i></a></td>
+							<td style="text-align:center"><a onclick="delete_payee('<?=$row['payee_id']?>')" style="cursor:pointer" alt="Remove"><i class="icon-trash text-warning-800"></i></a></td>
+						</tr>
+					<?php } ?>
+				</tbody>
 			</table>
 		</div>
 	</div>
 
-	<div id="modal_expense_payee" class="modal fade" tabindex="-1">
+	<div id="payee-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="modal-title"><i class="icon-pencil7 mr-2"></i> &nbsp; ADD PAYEE</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<form method="POST" name="formExpensePayee" id="formExpensePayee" autocomplete="off" data-parsley-validate="true">
+				<form method="POST" name="formExpensePayee" id="formExpensePayee" novalidate>
+					<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
+					<input type="hidden" id="expense_payee_id" name="expense_payee_id" class="form-control" />
 					<div class="modal-body">
 						<div class="form-group">
 							<label for="">Payee <small>*</small></label>
-							<input type="hidden" id="expense_payee_id" name="expense_payee_id" class="form-control" />
-							<input type="text" id="expense_payee_name" name="expense_payee_name" placeholder="Payee" class="form-control" data-parsley-pattern="^(?:[A-Za-z]+[ -])*[A-Za-z]+$" data-parsley-required="true" data-parsley-trigger="keyup">
+							<input type="text" id="expense_payee_name" name="expense_payee_name" placeholder="Payee" class="form-control" ng-pattern ="/^[a-zA-Z\s]*$/" ng-model="expense_payee_name" required>
+							<span ng-messages="formExpensePayee.expense_payee_name.$error" ng-if="formExpensePayee.expense_payee_name.$dirty">
+								<strong ng-message="pattern" class="text-danger">Please type alphabet only.</strong>
+								<strong ng-message="required" class="text-danger">This field is required.</strong>
+							</span>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" id="data-expense--payee" class="btn bg-green">Save</button>
+						<button type="submit" id="btn-expense--payee" onclick="InsertOrUpdatePayee()" ng-disabled="formExpensePayee.$invalid" class="btn bg-green">Add Payee <i class="icon-arrow-right14 position-right"></i></button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-	<div id="modal_expense_delete_payee" class="modal fade" tabindex="-1">
+	<div id="payee-delete-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="modal-title"><i class="icon-trash mr-2"></i> &nbsp; DELETE PAYEE?</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<div class="modal-body">
-					<input type="hidden" id="employee_delete_id" name="employee_delete_id" class="form-control"/>
-					<p class="text-center">Are you sure do you want to delete this payee?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="submit" id="data-delete-expense--payee" class="btn bg-green" onclick="delete_expense_payee_by_id(this.value)">Confirm</button>
-				</div>
+				<form name="formDeletePayee" id="formDeletePayee" method="POST" novalidate>
+					<div class="modal-body">
+						<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
+						<input type="hidden" id="payee_delete_id" name="payee_delete_id" class="form-control"/>
+						<p class="text-center">Are you sure do you want to delete this payee?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="submit" id="btn-delete--payee" class="btn bg-green" onclick="DeletePayeeById(this.value)">Confirm <i class="icon-check2 position-right"></i></button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

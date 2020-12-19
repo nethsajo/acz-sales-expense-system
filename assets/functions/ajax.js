@@ -220,6 +220,228 @@ function DeleteEmployeeById(employee_id) {
     });
 }
 
+function banks_modal() {
+    var modal = $('#banks-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formBanks')[0].reset();
+    
+    modal.find($('#btn-banks')).html('Add Bank <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+}
+
+function InsertOrUpdateBanks() {
+    var data = $('#formBanks').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdateBanks',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-banks').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Bank';
+            $('#btn-banks').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            $('#banks-modal').modal('hide');
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
+function view_banks(bank_id) {
+    var modal = $('#banks-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetBanksById', 
+        data: { bank_id : bank_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#bank_id')).val(data.bank_id);
+            modal.find($('#bank_name')).val(data.bank_name);
+            $('#modal-title').html('<i class="icon-people mr-2"></i>&nbsp; UPDATE BANK NAME');
+            $('#btn-banks').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function delete_banks(bank_id) {
+    var modal = $('#bank-delete-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete--bank")).val(bank_id);
+}
+
+function DeleteBankById(bank_id) {
+    var modal = $('#bank-delete-modal');
+    var data = { bank_delete_id : bank_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeleteBankById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete--bank').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            modal.modal('hide');
+            notify(data.type,data.message);
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
+function category_expense_modal() {
+    var modal = $('#category-expense-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formExpenseCategory')[0].reset();
+    
+    modal.find($('#btn-expense--category')).html('Add Category <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+}
+
+function InsertOrUpdateExpenseCategory() {
+    var data = $('#formExpenseCategory').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdateExpenseCategory',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-expense--category').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Category';
+            $('#btn-expense--category').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            $('#category-expense-modal').modal('hide');
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
+function view_expense_category(category_id) {
+    var modal = $('#category-expense-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetExpenseCategoryById', 
+        data: { expense_category_id : category_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#expense_category_id')).val(data.category_id);
+            modal.find($('#expense_category_name')).val(data.category_name);
+            $('#modal-title').html('<i class="icon-people mr-2"></i>&nbsp; UPDATE CATEGORY NAME');
+            $('#btn-expense--category').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function delete_expense_category(category_id) {
+    var modal = $('#expense-delete-category-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete-expense--category")).val(category_id);
+}
+
+function DeleteExpenseCategoryById(category_id) {
+    var modal = $('#expense-delete-category-modal');
+    var data = { expense_category_delete_id : category_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeleteExpenseCategoryById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete-expense--category').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            modal.modal('hide');
+            notify(data.type,data.message);
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
+function payee_modal() {
+    var modal = $('#payee-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formExpensePayee')[0].reset();
+    
+    modal.find($('#btn-expense--payee')).html('Add Payee <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+}
+
+function InsertOrUpdatePayee() {
+    var data = $('#formExpensePayee').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdatePayee',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-expense--payee').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Payee';
+            $('#btn-expense--payee').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            $('#payee-modal').modal('hide');
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
+function view_payee(payee_id) {
+    var modal = $('#payee-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetPayeeById', 
+        data: { expense_payee_id : payee_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#expense_payee_id')).val(data.payee_id);
+            modal.find($('#expense_payee_name')).val(data.payee_name);
+            $('#modal-title').html('<i class="icon-people mr-2"></i>&nbsp; UPDATE PAYEE');
+            $('#btn-expense--payee').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function delete_payee(payee_id) {
+    var modal = $('#payee-delete-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete--payee")).val(payee_id);
+}
+
+function DeletePayeeById(payee_id) {
+    var modal = $('#payee-delete-modal');
+    var data = { payee_delete_id : payee_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeletePayeeById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete--payee').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            modal.modal('hide');
+            notify(data.type,data.message);
+            setTimeout(function() {
+                location.reload();
+            }, 2000);
+        }
+    });
+}
+
 function notify(type,message) {
     Command: toastr[type](message)
 }

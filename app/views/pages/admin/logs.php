@@ -31,8 +31,14 @@
 						<th>Date and Time</th>
 					</tr>
 				</thead>
-				<tbody id="show_logs_table">
-					
+				<tbody>
+					<?php foreach($data['logs'] as $row) { ?>
+						<tr>
+							<td><?=$row['employee_surname'];?>, <?=$row['employee_firstname'];?></td>
+							<td><?=$row['logs_content'];?></td>
+							<td><?=date('M d, Y g:i A',strtotime($row['created_at']))?></td>
+						</tr>
+					<?php } ?>
 				</tbody>
 			</table>
 		</div>

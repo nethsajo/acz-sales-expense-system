@@ -23,9 +23,9 @@
 		}
 		
 		public function profile() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Profile';
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$data['token']	= $_SESSION['token'];
+			$data['title']	= 'Profile';
+			$data['user'] 	= $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
@@ -47,9 +47,10 @@
 		}
 		
 		public function banks() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Banks';
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$data['token']	= $_SESSION['token'];
+			$data['title']	= 'Banks';
+			$data['banks']	= $this->model('account')->get_all_banks();
+			$data['user']	= $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
@@ -59,9 +60,10 @@
 		}
 		
 		public function category() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Category';
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$data['token'] 		= $_SESSION['token'];
+			$data['title']		= 'Category';
+			$data['category']	= $this->model('account')->get_all_expense_category();
+			$data['user']		= $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
@@ -73,6 +75,7 @@
 		public function payee() {
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Payee';
+			$data['payee'] = $this->model('account')->get_all_payee();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -121,9 +124,10 @@
 		}
 		
 		public function logs() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Logs';
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$data['token'] 	= $_SESSION['token'];
+			$data['title'] 	= 'Logs';
+			$data['logs']	= $this->model('account')->get_logs(1);
+			$data['user']	= $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
@@ -202,8 +206,86 @@
 				$this->model('account')->delete_employees_by_id($employee_delete_id);
 			}
 		}
+
+		//Banks
+		public function InsertOrUpdateBanks() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'bank_id'	=> $this->input->post('bank_id'),
+					'bank_name'	=> $this->input->post('bank_name')
+				);
+				$this->model('account')->banks($data);
+			}
+		}
+
+		public function GetBanksById() {
+			$bank_id = $this->input->post('bank_id');
+			$this->model('account')->get_banks_by_id($bank_id);
+		}
+
+		public function DeleteBankById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$bank_delete_id = $this->input->post('bank_delete_id');
+				$this->model('account')->delete_banks_by_id($bank_delete_id);
+			}
+		}
+
+		//Expense Category
+		public function InsertOrUpdateExpenseCategory() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'expense_category_id'	=> $this->input->post('expense_category_id'),
+					'expense_category_name'	=> $this->input->post('expense_category_name')
+				);
+				$this->model('account')->expense_category($data);
+			}
+		}
+
+		public function GetExpenseCategoryById() {
+			$expense_category_id = $this->input->post('expense_category_id');
+			$this->model('account')->get_expense_category_by_id($expense_category_id);
+		}
+
+		public function DeleteExpenseCategoryById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$expense_category_delete_id = $this->input->post('expense_category_delete_id');
+				$this->model('account')->delete_expense_category_by_id($expense_category_delete_id);
+			}
+		}
+
+		//Expense Payee
+		public function InsertOrUpdatePayee() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'expense_payee_id'	=> $this->input->post('expense_payee_id'),
+					'expense_payee_name'	=> $this->input->post('expense_payee_name')
+				);
+				$this->model('account')->expense_payee($data);
+			}
+		}
+
+		public function GetPayeeById() {
+			$expense_payee_id = $this->input->post('expense_payee_id');
+			$this->model('account')->get_payee_by_id($expense_payee_id);
+		}
+
+		public function DeletePayeeById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$payee_delete_id = $this->input->post('payee_delete_id');
+				$this->model('account')->delete_payee_by_id($payee_delete_id);
+			}
+		}
 		
 		public function logout() {
+			$_SESSION = array();
+			if (ini_get("session.use_cookies")) {
+				$params = session_get_cookie_params();
+				setcookie(session_name(), '', time() - 42000,
+					$params["path"], $params["domain"],
+					$params["secure"], $params["httponly"]
+				);
+			}
+
 			session_destroy();
 			redirect('login');
 		}

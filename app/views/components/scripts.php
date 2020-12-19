@@ -22,7 +22,7 @@
         <script src="<?=ASSETS?>js/plugins/forms/selects/select2.min.js"></script>
 
         <script src="<?=ASSETS?>js/app.js"></script>
-        <script src="<?=ASSETS?>js/demo_pages/datatables_responsive.js"></script>
+        <script src="<?=ASSETS?>js/custom.js"></script>
         <!-- Theme JS files -->
 
         <!--Parsley Validation-->
@@ -39,6 +39,12 @@
             toastr_option();
         </script>
 
-        
+        <script type="text/javascript">
+            implement_employee_datatable();
+            implement_bank_datatable();
+            implement_expense_category_datatable();
+            implement_payee_datatable();
+            implement_logs_datatable();
+        </script>
     </body>
 </html>

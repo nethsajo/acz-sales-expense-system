@@ -16,6 +16,11 @@
             $query = $this->db->query("SELECT * FROM tbl_roles");
             return $query;
         }
+
+        public function get_logs($id) {
+            $query = $this->db->query("SELECT * FROM tbl_accounts AS a INNER JOIN tbl_logs AS l ON a.employee_id = l.employee_id WHERE l.employee_id != $id");
+            return $query;
+        }
 		
 		public function get_user_information($employee_id) {
 			$query = $this->db->query("SELECT * FROM tbl_accounts AS ta INNER JOIN tbl_roles AS tr ON ta.employee_role_id = tr.role_id WHERE employee_id = $employee_id");
@@ -259,7 +264,121 @@
             $query = $this->db->query("SELECT * FROM tbl_accounts AS ta INNER JOIN tbl_roles AS tr ON ta.employee_role_id = tr.role_id WHERE ta.employee_id = $employee_id");
             echo json_encode($query->fetch_object());
         }
-		
+
+        //Banks
+        public function banks($data) {
+            $bank_id    = $data['bank_id'];
+            $bank_name  = $data['bank_name'];
+
+            if(empty($bank_id)) {
+                $check = $this->db->query("SELECT * FROM tbl_banks WHERE bank_name = '$bank_name'");
+                if($check->num_rows > 0) {
+                    $message = 'Bank is already exist.';
+                    notify('error', $message, false);
+                } else {
+                    $message = $bank_name.' has been added!';
+                    $query = $this->db->query("INSERT INTO tbl_banks (bank_name) VALUES('$bank_name')");
+                    $query ? notify('success', $message, true) : null;
+                }
+            } else {
+                $message = 'Bank has been updated.';
+                $query = $this->db->query("UPDATE tbl_banks SET bank_name = '$bank_name' WHERE bank_id = $bank_id");
+                $query ? notify('success', $message, true) : null;
+            }
+        }
+
+        public function get_all_banks() {
+            $query = $this->db->query("SELECT * FROM tbl_banks");
+            return $query;
+        }
+
+        public function get_banks_by_id($bank_id) {
+            $query = $this->db->query("SELECT * FROM tbl_banks WHERE bank_id = $bank_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function delete_banks_by_id($bank_delete_id) {
+            $query = $this->db->query("DELETE FROM tbl_banks WHERE bank_id = $bank_delete_id");
+            $message = "Bank has been deleted.";
+            notify('info', $message, true);
+        }
+        
+        //Expense Category
+        public function expense_category($data) {
+            $category_id    = $data['expense_category_id'];
+            $category_name  = $data['expense_category_name'];
+
+            if(empty($category_id)) {
+                $check = $this->db->query("SELECT * FROM tbl_expense_category WHERE category_name = '$category_name'");
+                if($check->num_rows > 0) {
+                    $message = 'Category is already exist.';
+                    notify('error', $message, false);
+                } else {
+                    $message = $category_name.' has been added!';
+                    $query = $this->db->query("INSERT INTO tbl_expense_category (category_name) VALUES('$category_name')");
+                    $query ? notify('success', $message, true) : null;
+                }
+            } else {
+                $message = 'Category has been updated.';
+                $query = $this->db->query("UPDATE tbl_expense_category SET category_name = '$category_name' WHERE category_id = $category_id");
+                $query ? notify('success', $message, true) : null;
+            }
+        }
+
+        public function get_all_expense_category() {
+            $query = $this->db->query("SELECT * FROM tbl_expense_category");
+            return $query;
+        }
+
+        public function get_expense_category_by_id($expense_category_id) {
+            $query = $this->db->query("SELECT * FROM tbl_expense_category WHERE category_id = $expense_category_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function delete_expense_category_by_id($expense_category_delete_id) {
+            $query = $this->db->query("DELETE FROM tbl_expense_category WHERE category_id = $expense_category_delete_id");
+            $message = "Category has been deleted.";
+            notify('info', $message, true);
+        }
+
+        //Expense Category
+        public function expense_payee($data) {
+            $expense_payee_id   = $data['expense_payee_id'];
+            $expense_payee_name = $data['expense_payee_name'];
+
+            if(empty($expense_payee_id)) {
+                $check = $this->db->query("SELECT * FROM tbl_expense_payee WHERE payee_name = '$expense_payee_name'");
+                if($check->num_rows > 0) {
+                    $message = 'Payee is already exist.';
+                    notify('error', $message, false);
+                } else {
+                    $message = $expense_payee_name.' has been added!';
+                    $query = $this->db->query("INSERT INTO tbl_expense_payee (payee_name) VALUES('$expense_payee_name')");
+                    $query ? notify('success', $message, true) : null;
+                }
+            } else {
+                $message = 'Payee has been updated.';
+                $query = $this->db->query("UPDATE tbl_expense_payee SET payee_name = '$expense_payee_name' WHERE payee_id = $expense_payee_id");
+                $query ? notify('success', $message, true) : null;
+            }
+        }
+
+        public function get_all_payee() {
+            $query = $this->db->query("SELECT * FROM tbl_expense_payee");
+            return $query;
+        }
+
+        public function get_payee_by_id($expense_payee_id) {
+            $query = $this->db->query("SELECT * FROM tbl_expense_payee WHERE payee_id = $expense_payee_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function delete_payee_by_id($payee_delete_id) {
+            $query = $this->db->query("DELETE FROM tbl_expense_payee WHERE payee_id = $payee_delete_id");
+            $message = "Payee has been deleted.";
+            $query ? notify('info', $message, true) : null;
+        }
+
 		public function post($data) {
 			$query = $this->db->real_escape_string(htmlentities($_POST[$data]));
 			return $query;
