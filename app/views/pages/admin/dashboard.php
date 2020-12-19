@@ -83,7 +83,7 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xl-7">
+			<div class="col-xl-6">
 				<div class="card">
 					<div class="card-header header-elements-inline">
 						<h6 class="card-title">Sample</h6>
@@ -98,7 +98,7 @@
 				</div>
 			</div>
 
-			<div class="col-xl-5">
+			<div class="col-xl-6">
 				<div class="card">
 					<div class="card-header header-elements-inline">
 						<h6 class="card-title">Sample Data</h6>

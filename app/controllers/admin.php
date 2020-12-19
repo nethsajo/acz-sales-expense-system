@@ -148,7 +148,7 @@
 			$this->model('account')->generate_employee_number();
 		}
 
-		public function get_information_by_id() {
+		public function GetInformationById() {
 			$employee_id = $this->input->post('employee_id');
 			$this->model('account')->get_employee_information_by_id($employee_id);
 		}
@@ -172,6 +172,17 @@
 					'employee_security_code'	=> rand(111111, 999999)
 				);
 				$this->model('account')->employees($data);
+			}
+		}
+
+		public function UpdatePassword() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'account_id'		=> $_SESSION['account_id'],
+					'current_password'	=> $this->input->post('current_password'),
+					'new_password'     	=> hashing($this->input->post('new_password'))
+				);
+				$this->model('account')->update_password($data);
 			}
 		}
 

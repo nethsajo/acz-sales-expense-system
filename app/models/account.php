@@ -48,7 +48,34 @@
 				$message = 'Your employee number or password was entered incorrectly.';
                 notify('error', $message, false);
 			}
-		}
+        }
+        
+        public function update_password($data) {
+            $account_id         = $data['account_id'];
+            $current_password   = $data['current_password'];
+            $new_password       = $data['new_password'];
+
+            $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_id = $account_id");
+            $check = $query->num_rows;
+
+            if($check > 0) {
+                $row = $query->fetch_object();
+                $employee_hash_password = $row->employee_password;
+
+                if(verify($current_password, $employee_hash_password)) {
+                    $query = $this->db->query("UPDATE tbl_accounts SET employee_password = '$new_password' WHERE employee_id = $account_id");
+                    $message = 'Your password has been changed successfully!';
+                    if($query) {
+                        $content = 'update his / her password';
+                        $this->db->query("INSERT INTO tbl_logs (logs_content, employee_id) VALUES ('$content', $account_id)");
+                    } 
+                    notify('info','Password has been changed.', true);
+                } else {
+                    $message = 'Error! Password does not match.';
+                    notify('error', $message, false);
+                }
+            }
+        }
 
 		public function user_forgot_password($forgot_password_email) {
 			$check = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_email = '$forgot_password_email'");

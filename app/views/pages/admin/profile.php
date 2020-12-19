@@ -26,18 +26,21 @@
 				<h5 class="card-title">Account Settings</h5>
 			</div>
 			<div class="card-body">
-				<form method="POST" name="formChangePassword" id="formChangePassword" autocomplete="off" data-parsley-validate="true">
+				<form method="POST" name="formChangePassword" id="formChangePassword" novalidate>
+					<input type="hidden" id="token" name="token" value="<?=$data['token'];?>'">
 					<div class="form-group">
 						<div class="row">
 							<div class="col-md-6">
 								<label>Name</label>
-								<input type="hidden" value="<?= $_SESSION["account_id"]?>" name="employee_id" id="employee_id" class="form-control">
 								<input type="text" value="<?=$data['user']->employee_firstname .' '.  $data['user']->employee_surname;?>" readonly="readonly" class="form-control">
 							</div>
 
 							<div class="col-md-6">
 								<label>Current Password</label>
-								<input type="password" type="password" placeholder="Enter current password" name="current_password" id="current_password" class="form-control" data-parsley-required-message="Please enter your current password" data-parsley-trigger="keyup" data-parsley-required="true">
+								<input type="password" type="password" placeholder="Enter current password" name="current_password" id="current_password" class="form-control" ng-model="current_password" required>
+								<span ng-messages="formChangePassword.current_password.$error" ng-if="formChangePassword.current_password.$dirty">
+									<strong ng-message="required" class="text-danger">This field is required.</strong>
+								</span>
 							</div>
 						</div>
 					</div>
@@ -46,17 +49,24 @@
 						<div class="row">
 							<div class="col-md-6">
 								<label>New Password</label>
-								<input type="password" placeholder="Enter new password" name="new_password" id="new_password" class="form-control" data-parsley-required-message="Please enter your new password" data-parsley-required="true" data-parsley-length="[8,16]" data-parsley-trigger="keyup">
+								<input type="password" placeholder="Enter new password" name="new_password" id="new_password" class="form-control" ng-minlength=8 ng-model="new_password" required password-verify="{{retype_password}}">
+								<span ng-messages="formChangePassword.new_password.$error" ng-if="formChangePassword.new_password.$dirty">
+									<strong ng-message="minlength" class="text-danger">Password should be 8 characters.</strong>
+									<strong ng-message="required" class="text-danger">This field is required.</strong>
+								</span>
 							</div>
-
 							<div class="col-md-6">
 								<label>Confirm Password</label>
-								<input type="password" placeholder="Repeat new password" name="retype_password" id="retype_password" class="form-control" data-parsley-required-message="Please retype your new password" data-parsley-required="true" data-parsley-equalto="#new_password" data-parsley-trigger="keyup">
+								<input type="password" placeholder="Repeat new password" name="retype_password" id="retype_password" class="form-control" ng-model="retype_password" required password-verify="{{new_password}}">
+								<span ng-messages="formChangePassword.retype_password.$error" ng-if="formChangePassword.retype_password.$dirty">
+									<strong ng-message="required" class="text-danger">This field is required.</strong>
+									<strong ng-show="retype_password != new_password" class="text-danger">Password not matched.</strong>
+								</span>
 							</div>
 						</div>
 					</div>
 					<div class="text-right">
-						<button type="submit" name="btn-change--pasword" id="btn-change--pasword" class="btn bg-green">Save Changes</button>
+						<button type="submit" onclick="update_password()" ng-disabled="formChangePassword.$invalid" name="btn-change--password" id="btn-change--password" class="btn bg-green">Save Changes <i class="icon-arrow-right14 position-right"></i></button>
 					</div>
 				</form>
 			</div>

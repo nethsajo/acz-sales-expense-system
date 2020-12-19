@@ -38,5 +38,7 @@
 
             toastr_option();
         </script>
+
+        
     </body>
 </html>

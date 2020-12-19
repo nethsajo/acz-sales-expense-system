@@ -64,14 +64,27 @@ function reset_password() {
             $('#btn-reset--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
         },
         success:function(data) {
-            if(data.success === true) {
-                location.href = data.url;
-                successful(data.success,data.bgcolor,data.color,data.message);
-            }
-             
+            data.success === true ? location.href = data.url : notify(data.type,data.message);
             $('#btn-reset--password').html('RECOVER MY ACCOUNT <i class="icon-circle-right2 ml-2"></i>').attr('disabled',false);
         }
     });
+}
+
+function update_password() {
+    var data = $('#formChangePassword').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'UpdatePassword',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-change--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            $('#btn-change--password').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    })
 }
 
 function employee_modal() {
@@ -122,7 +135,7 @@ function view_employee(employee_id) {
     var modal = $('#employee-modal');
     $.ajax({
         type: 'POST', 
-        url: url + 'get_information_by_id', 
+        url: url + 'GetInformationById', 
         data: { employee_id : employee_id }, 
         dataType: 'json',
         success: function (data) {
@@ -148,7 +161,7 @@ function view_employee_status(id) {
     var modal = $('#employee-status-modal');
     $.ajax({
         type: 'POST', 
-        url: url + 'get_information_by_id', 
+        url: url + 'GetInformationById', 
         data: { employee_id : id }, 
         dataType: 'json',
         success: function (data) {
@@ -213,7 +226,7 @@ function notify(type,message) {
 
 function toastr_option() {
     toastr.options = {
-        "newestOnTop": true, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": true, "showDuration": 300, "hideDuration": 1000, "timeOut": 5000, "extendedTimeOut": 1000, "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut"
+        "newestOnTop": true, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": true, "showDuration": 300, "hideDuration": 1000, "timeOut": 5000, "extendedTimeOut": 1000, "showEasing": "swing", "hideEasing": "linear", "showMethod": "slideDown", "hideMethod": "slideUp"
     }
 }
 

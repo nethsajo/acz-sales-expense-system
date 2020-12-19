@@ -102,19 +102,15 @@
         <!---Amaran Notification-->
         <script type="text/javascript" src="<?=ASSETS?>js/amaran/jquery.amaran.min.js"></script>
         <!-- /Amaran Notification-->
+        <?php if(isset($_SESSION['message'])) { ?>
+            <script type="text/javascript">
+                Command: toastr["success"]('<?=$_SESSION['message'];?>')
+            </script>
+        <?php unset($_SESSION['message']); } ?>
         <script type="text/javascript">
             var app = angular.module('app', ['ngMessages']);
             app.controller('mainController',function($scope){});
             toastr_option();
         </script>
-        <?php 
-        if(isset($_SESSION['message'])) { ?>
-            <script type="text/javascript">
-                $.amaran({
-                    'theme'     : 'colorful', 'content'   : { bgcolor: '#4caf50',color: '#fff',message: '<?=$_SESSION['message']?>' },
-                    'position'  : 'top right', 'outEffect' : 'slideBottom'
-                });
-            </script>
-        <?php unset($_SESSION['message']); } ?>
     </body>
 </html>

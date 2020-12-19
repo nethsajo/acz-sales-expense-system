@@ -58,7 +58,7 @@
 							</a>
 						</li>
 						<li class="nav-item nav-item-submenu">
-							<a href="<?=URL_ROOT?>" class="nav-link"><i class="icon-chart"></i> <span>Expenses</span></a>
+							<a href="#" class="nav-link"><i class="icon-chart"></i> <span>Expenses</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Expenses">
 								<li class="nav-item"><a href="<?=URL?>admin/banks" class="nav-link <?= $data['title'] == 'Banks' ? 'active' : '';?>">Banks</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/category" class="nav-link <?= $data['title'] == 'Category' ? 'active' : '';?>">Category</a></li>
