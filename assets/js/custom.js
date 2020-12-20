@@ -94,3 +94,27 @@ function implement_logs_datatable() {
         }
     });
 }
+
+function implement_expense_datatable() {
+    $('#show-expense-transactions-table').DataTable({
+        autoWidth: false,
+        columnDefs: [{ 
+            orderable: false,
+            targets: [6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24]
+        }],
+        scrollX: true,
+        scrollY: '400px',
+        scrollCollapse: true,
+        fixedColumns: {
+            leftColumns: 3,
+            rightColumns: 3
+        },
+        dom: '<"datatable-header"fl><"datatable-scroll datatable-scroll-wrap"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Filter:</span> _INPUT_',
+            searchPlaceholder: 'Type to filter...',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+        }
+    });
+}

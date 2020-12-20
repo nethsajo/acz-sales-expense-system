@@ -124,9 +124,6 @@ function InsertOrUpdateEmployee() {
             var content = data.type == 'info' ? 'Save Changes' : 'Add Employee';
             $('#btn-employee').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
             $('#employee-modal').modal('hide');
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -186,9 +183,6 @@ function UpdateEmployeeStatus() {
             data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
             $('#btn-reset--password').html('Save Changes').attr('disabled',false);
             $('#employee-status-modal').modal('hide');
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -213,9 +207,6 @@ function DeleteEmployeeById(employee_id) {
         success:function(data) {
             modal.modal('hide');
             notify(data.type,data.message);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -243,9 +234,6 @@ function InsertOrUpdateBanks() {
             var content = data.type == 'info' ? 'Save Changes' : 'Add Bank';
             $('#btn-banks').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
             $('#banks-modal').modal('hide');
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -287,9 +275,6 @@ function DeleteBankById(bank_id) {
         success:function(data) {
             modal.modal('hide');
             notify(data.type,data.message);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -304,6 +289,7 @@ function category_expense_modal() {
 
 function InsertOrUpdateExpenseCategory() {
     var data = $('#formExpenseCategory').serialize();
+    var modal = $('#category-expense-modal');
     $.ajax({
         type : 'POST',
         url : url + 'InsertOrUpdateExpenseCategory',
@@ -316,10 +302,7 @@ function InsertOrUpdateExpenseCategory() {
             data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
             var content = data.type == 'info' ? 'Save Changes' : 'Add Category';
             $('#btn-expense--category').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
-            $('#category-expense-modal').modal('hide');
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
+            modal.modal('hide');
         }
     });
 }
@@ -361,9 +344,6 @@ function DeleteExpenseCategoryById(category_id) {
         success:function(data) {
             modal.modal('hide');
             notify(data.type,data.message);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
         }
     });
 }
@@ -378,6 +358,7 @@ function payee_modal() {
 
 function InsertOrUpdatePayee() {
     var data = $('#formExpensePayee').serialize();
+    var modal = $('#payee-modal');
     $.ajax({
         type : 'POST',
         url : url + 'InsertOrUpdatePayee',
@@ -390,10 +371,7 @@ function InsertOrUpdatePayee() {
             data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
             var content = data.type == 'info' ? 'Save Changes' : 'Add Payee';
             $('#btn-expense--payee').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
-            $('#payee-modal').modal('hide');
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
+            modal.modal('hide');
         }
     });
 }
@@ -433,11 +411,8 @@ function DeletePayeeById(payee_id) {
             $('#btn-delete--payee').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
         },
         success:function(data) {
-            modal.modal('hide');
             notify(data.type,data.message);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
+            modal.modal('hide');
         }
     });
 }
@@ -456,6 +431,7 @@ function expense_modal() {
 
 function InsertOrUpdateExpense() {
     var data = $('#formExpenseTransaction').serialize();
+    var modal = $('#expense-transaction-modal');
     $.ajax({
         type : 'POST',
         url : url + 'InsertOrUpdateExpenseTransaction',
@@ -468,9 +444,7 @@ function InsertOrUpdateExpense() {
             data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
             var content = data.type == 'info' ? 'Save Changes' : 'Add Expense';
             $('#btn-expense--transaction').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
-            setTimeout(function() {
-                location.reload();
-            }, 3000);
+            modal.modal('hide');
         }
     });
 }
@@ -481,7 +455,7 @@ function notify(type,message) {
 
 function toastr_option() {
     toastr.options = {
-        "newestOnTop": true, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": true, "showDuration": 300, "hideDuration": 1000, "timeOut": 5000, "extendedTimeOut": 1000, "showEasing": "swing", "hideEasing": "linear", "showMethod": "slideDown", "hideMethod": "slideUp"
+        "newestOnTop": true, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": true, "showDuration": 300, "hideDuration": 1000, "timeOut": 3000, "extendedTimeOut": 1000, "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut", onHidden: function(){ location.reload(); }
     }
 }
 

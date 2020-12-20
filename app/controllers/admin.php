@@ -92,6 +92,7 @@
 			$data['payee'] = $this->model('account')->get_all_payee();
 			$data['units'] = $this->model('account')->get_units();
 			$data['category'] = $this->model('account')->get_all_expense_category();
+			$data['transactions'] = $this->model('account')->get_all_expense_transactions();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);

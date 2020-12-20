@@ -212,7 +212,7 @@
         }
 
         public function employees($data) {
-            $employee_id			= $data['employee_id'];
+            $employee_id            = $data['employee_id'];
             $employee_surname		= $data['employee_surname'];
             $employee_firstname		= $data['employee_firstname'];
             $employee_middlename	= $data['employee_middlename'];
@@ -429,6 +429,11 @@
                     $query ? notify('success', $message, true) : null;    
                 }
             } 
+        }
+
+        public function get_all_expense_transactions() {
+            $query = $this->db->query("SELECT * FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id");
+            return $query;
         }
 
         public function post($data) {

@@ -52,6 +52,7 @@
             implement_expense_category_datatable();
             implement_payee_datatable();
             implement_logs_datatable();
+            implement_expense_datatable();
         </script>
     </body>
 </html>

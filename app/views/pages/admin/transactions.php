@@ -61,7 +61,39 @@
 					</tr>
 				</thead>
 				<tbody>
-				
+					<?php foreach($data['transactions'] as $row) : ?>
+						<?php 
+							$timestamp = $row['expense_date']; 
+							$vatableAmount = $row['expense_total'] - $row['expense_vat'];    
+						?>
+						<tr>
+							<td><?=$timestamp = date( "m/d/Y", strtotime($timestamp));?></td> 
+							<td><?=$row['expense_category'];?></td>
+							<td><?=$row['expense_vendor'];?></td>
+							<td><?=$row['expense_tin'];?></td> 
+							<td><?=$row['expense_si'];?></td>
+							<td><?=$row['expense_or'];?></td> 
+							<td><?=$row['expense_particular'];?></td>
+							<td><?=$row['expense_qty'];?></td> 
+							<td><?=$row['expense_unit'];?></td> 
+							<td><?=$row['expense_price_unit'];?></td> 
+							<td><?=$row['expense_total'];?></td> 
+							<td><?=$row['expense_discount'];?></td>
+							<td><?=$row['expense_total'];?></td>
+							<td><?=$row['expense_total'];?></td> 
+							<td><?=$row['expense_cvno'];?></td>   
+							<td><?=$row['expense_payee'];?></td>
+							<td><?=$row['expense_bank'];?></td>
+							<td><?=$row['expense_cn'];?></td>
+							<td><?=$row['expense_check_date'];?></td>
+							<td><?=$row['expense_vat'];?></td>
+							<td><?= number_format((float)$vatableAmount, 2, '.', '');?></td>
+							<td><?=$row['expense_remarks'];?></td>
+							<td style="text-align:center"><a onclick="edit_expense_by_id('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Edit"><i class="icon-pencil text-info-800"></i></a></td>
+							<td style="text-align:center"><a onclick="modal_edit_remarks('<?=$row['expense_id']?>')"" style="cursor:pointer" alt="Remarks"><i class="icon-eye text-teal-800"></i></a></td>
+							<td style="text-align:center"><a onclick="modal_delete_expense_transaction('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Remove"><i class="icon-trash text-warning-800"></i></a></td>
+						</tr>
+					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
@@ -77,7 +109,6 @@
 				<form method="POST" name="formExpenseTransaction" id="formExpenseTransaction">
 					<input type="hidden" id="token" name="token" class="form-control" value="<?=$data['token']?>'">
 					<input type="hidden" id="expense_id" name="expense_id" class="form-control">
-					<input type="hidden" id="expense_remarks" name="expense_remarks" value="0" class="form-control">
 					<div class="modal-body">
 						<div class="form-group">
 							<div class="row">
