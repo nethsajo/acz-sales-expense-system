@@ -26,7 +26,7 @@
 			$data['token']	= $_SESSION['token'];
 			$data['title']	= 'Profile';
 			$data['user'] 	= $this->model('account')->get_user_information($_SESSION['account_id']);
-			$this->view('components/header',$data);
+			$this->view('components/header',$data);	
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
 			$this->view('pages/admin/profile',$data);
@@ -88,6 +88,10 @@
 		public function transactions() {
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Transactions';
+			$data['banks'] = $this->model('account')->get_all_banks();
+			$data['payee'] = $this->model('account')->get_all_payee();
+			$data['units'] = $this->model('account')->get_units();
+			$data['category'] = $this->model('account')->get_all_expense_category();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -257,7 +261,7 @@
 		public function InsertOrUpdatePayee() {
 			if(isset($_SESSION['token']) == $this->input->post('token')) {
 				$data = array(
-					'expense_payee_id'	=> $this->input->post('expense_payee_id'),
+					'expense_payee_id'		=> $this->input->post('expense_payee_id'),
 					'expense_payee_name'	=> $this->input->post('expense_payee_name')
 				);
 				$this->model('account')->expense_payee($data);
@@ -275,17 +279,43 @@
 				$this->model('account')->delete_payee_by_id($payee_delete_id);
 			}
 		}
+
+		public function InsertOrUpdateExpenseTransaction() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'expense_id'             => $this->input->post('expense_id'), 
+					'expense_category'       => $this->input->post('expense_category'),
+					'expense_vendor'         => $this->input->post('expense_vendor'),
+					'expense_tin'            => $this->input->post('expense_tin'),
+					'expense_si'             => $this->input->post('expense_si'),
+					'expense_or'             => $this->input->post('expense_or'),
+					'expense_particular'     => $this->input->post('expense_particular'),
+					'expense_unit'           => $this->input->post('expense_unit'),
+					'expense_payee'          => $this->input->post('expense_payee'),
+					'expense_bank'           => $this->input->post('expense_bank'),
+					'expense_cvno'           => $this->input->post('expense_cvno'),
+					'expense_cn'             => $this->input->post('expense_cn'),
+					'expense_check_date'     => $this->input->post('expense_check_date'),
+					'expense_qty'            => $this->input->post('expense_qty'),
+					'expense_price_unit'     => $this->input->post('expense_price_unit'),
+					'expense_discount'       => $this->input->post('expense_discount'),
+					'expense_total_price'    => $this->input->post('expense_total_price'),
+					'expense_vat'            => $this->input->post('expense_vat'),
+					'expense_remarks'        => $this->input->post('expense_remarks')
+				);
+				$this->model('account')->expense_transactions($data);
+			}
+		}
 		
 		public function logout() {
 			$_SESSION = array();
 			if (ini_get("session.use_cookies")) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', time() - 42000,
-					$params["path"], $params["domain"],
-					$params["secure"], $params["httponly"]
+				$params["path"], $params["domain"],
+				$params["secure"], $params["httponly"]
 				);
 			}
-
 			session_destroy();
 			redirect('login');
 		}

@@ -22,7 +22,7 @@
 	</div>
 
 	<div class="content">
-		<button id="button_expense_transaction" class="btn bg-green mb-3" onclick="modal_expense_transaction()"><i class="icon-file-text mr-2"></i><b> ADD NEW EXPENSE</b></button>
+		<button onclick="expense_modal()" id="btn-expense" class="btn bg-green mb-3"><i class="icon-plus3 mr-2"></i><b> ADD NEW EXPENSE</b></button>
 		<div class="card">
 			<table class="table datatable-fixed-both" id="show-expense-transactions-table">
 				<thead>
@@ -60,34 +60,47 @@
 						<th></th>
 					</tr>
 				</thead>
-				<tbody id="show_expense_transactions_table" ><!--content will go here--></tbody>
+				<tbody>
+				
+				</tbody>
 			</table>
 		</div>
 	</div>
 
-	<div id="modal_expense_transaction" class="modal fade" tabindex="-1">
+	<div id="expense-transaction-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="modal-title"><i class="icon-eye mr-2"></i> &nbsp; ADD EXPENSE DETAILS</h5>
+					<h5 class="modal-title" id="modal-title"><i class="icon-file-spreadsheet mr-2"></i> &nbsp; ADD EXPENSE DETAILS</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<form method="POST" name="formExpenseTransaction" id="formExpenseTransaction" autocomplete="off" data-parsley-validate="true">
+				<form method="POST" name="formExpenseTransaction" id="formExpenseTransaction">
+					<input type="hidden" id="token" name="token" class="form-control" value="<?=$data['token']?>'">
+					<input type="hidden" id="expense_id" name="expense_id" class="form-control">
+					<input type="hidden" id="expense_remarks" name="expense_remarks" value="0" class="form-control">
 					<div class="modal-body">
 						<div class="form-group">
 							<div class="row">
-								<input type="hidden" id="expense_id" name="expense_id" class="form-control" />
+								<div class="col-md-4">
+									<label for="">TIN <small>*</small></label>
+									<input type="text" id="expense_tin" name="expense_tin" placeholder="TIN" class="form-control" ng-model="expense_tin" required>
+									<span ng-messages="formExpenseTransaction.expense_tin.$error" ng-if="formExpenseTransaction.expense_tin.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
+								</div>
 								<div class="col-md-4">
 									<label for="">SI No. <small>*</small></label>
-									<input type="text" id="expense_si" name="expense_si" placeholder="Sales Invoice Number" class="form-control" data-parsley-required="true"/>
+									<input type="text" id="expense_si" name="expense_si" placeholder="Sales Invoice Number" class="form-control" ng-model="expense_si" required>
+									<span ng-messages="formExpenseTransaction.expense_si.$error" ng-if="formExpenseTransaction.expense_si.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">OR No. <small>*</small></label>
-									<input type="text" id="expense_or" name="expense_or" placeholder="Official Receipt Number" class="form-control" data-parsley-required="true"/>
-								</div>
-								<div class="col-md-4">
-									<label for="">TIN <small>*</small></label>
-									<input type="text" id="expense_tin" name="expense_tin" placeholder="TIN" class="form-control" data-parsley-required="true"/>
+									<input type="text" id="expense_or" name="expense_or" placeholder="Official Receipt Number" class="form-control" ng-model="expense_or" required>
+									<span ng-messages="formExpenseTransaction.expense_or.$error" ng-if="formExpenseTransaction.expense_or.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -95,28 +108,41 @@
 							<div class="row">
 								<div class="col-md-4">
 									<label for="">Category <small>*</small></label>
-									<select id="expense_category" name="expense_category" class="form-control" data-parsley-required="true">
+									<select id="expense_category" name="expense_category" class="form-control" ng-model="expense_category" required>
 										<option value="" disabled selected>Select your option</option>
-										<?php foreach ($data->get_expense_category() as $row_category):?>
+										<?php foreach ($data['category'] as $row_category):?>
 											<option value="<?=$row_category['category_name']?>"><?=$row_category['category_name']?></option>
 										<?php endforeach;?>
 									</select>
+									<span ng-messages="formExpenseTransaction.expense_category.$error" ng-if="formExpenseTransaction.expense_category.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">Particular <small>*</small></label>
-									<input type="text" id="expense_particular" name="expense_particular" placeholder="Particular" class="form-control" data-parsley-pattern="^(?:[A-Za-z]+[ -])*[A-Za-z]+$" data-parsley-required="true" data-parsley-trigger="keyup"/>
+									<input type="text" id="expense_particular" name="expense_particular" placeholder="Particular" class="form-control" ng-model="expense_particular" required>
+									<span ng-messages="formExpenseTransaction.expense_particular.$error" ng-if="formExpenseTransaction.expense_particular.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-2">
 									<label for="">Quantity <small>*</small></label>
-									<input type="text" id="expense_qty" name="expense_qty" placeholder="Quantity" class="form-control" data-parsley-type="number" data-parsley-required="true" data-parsley-trigger="keyup"/>
+									<input type="text" id="expense_qty" name="expense_qty" placeholder="Quantity" class="form-control" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-model="expense_qty" required>
+									<span ng-messages="formExpenseTransaction.expense_qty.$error" ng-if="formExpenseTransaction.expense_qty.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-2">
 									<label for="">Unit <small>*</small></label>
-									<select id="expense_unit" name="expense_unit" class="form-control" data-parsley-required="true">
-										<?php foreach ($data->get_units() as $row_units):?>
+									<select id="expense_unit" name="expense_unit" class="form-control" ng-model="expense_unit" required>
+										<?php foreach ($data['units'] as $row_units):?>
 											<option value="<?=$row_units['units_name']?>"><?=$row_units['units_name']?></option>
 										<?php endforeach;?>
 									</select>
+									<span ng-messages="formExpenseTransaction.expense_unit.$error" ng-if="formExpenseTransaction.expense_unit.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -124,15 +150,25 @@
 							<div class="row">
 								<div class="col-md-3">
 									<label for="">Price / Unit <small>*</small></label>
-									<input type="text" id="expense_price_unit" name="expense_price_unit" placeholder="Price / Unit" class="form-control" data-parsley-type="number" data-parsley-required="true" data-parsley-trigger="keyup"/>
+									<input type="text" id="expense_price_unit" name="expense_price_unit" placeholder="Price / Unit" class="form-control" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-model="expense_price_unit" required>
+									<span ng-messages="formExpenseTransaction.expense_price_unit.$error" ng-if="formExpenseTransaction.expense_price_unit.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-3">
 									<label for="">Discount </label>
-									<input type="text" id="expense_discount" name="expense_discount" placeholder="Discount (optional)" data-parsley-type="digits" class="form-control"/>
+									<input type="text" id="expense_discount" name="expense_discount" class="form-control" placeholder="Discount (optional)" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-model="expense_discount">
+									<span ng-messages="formExpenseTransaction.expense_discount.$error" ng-if="formExpenseTransaction.expense_discount.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+									</span>
 								</div>
 								<div class="col-md-2">
 									<label for="">VAT </label>
-									<input type="text" id="expense_vat" name="expense_vat" placeholder="VAT" data-parsley-type="number" class="form-control" data-parsley-type="number"/>
+									<input type="text" id="expense_vat" name="expense_vat" placeholder="VAT" class="form-control" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-model="expense_vat">
+									<span ng-messages="formExpenseTransaction.expense_vat.$error" ng-if="formExpenseTransaction.expense_vat.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">Total Price <small>*</small></label>
@@ -144,20 +180,31 @@
 							<div class="row">
 								<div class="col-md-4">
 									<label for="">Check Voucher Number <small>*</small></label>
-									<input type="text" id="expense_cvno" name="expense_cvno" placeholder="Check Voucher Number" class="form-control" data-parsley-type="digits" data-parsley-required="true" data-parsley-trigger="keyup"/>
+									<input type="text" id="expense_cvno" name="expense_cvno" placeholder="Check Voucher Number" class="form-control" ng-pattern="/^[0-9]*$/" ng-model="expense_cvno" required>
+									<span ng-messages="formExpenseTransaction.expense_cvno.$error" ng-if="formExpenseTransaction.expense_cvno.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">Check Number <small>*</small></label>
-									<input type="text" id="expense_cn" name="expense_cn" placeholder="Check Number" class="form-control" data-parsley-type="digits" data-parsley-required="true" data-parsley-trigger="keyup"/>
+									<input type="text" id="expense_cn" name="expense_cn" placeholder="Check Number" class="form-control" ng-pattern="/^[0-9]*$/" ng-model="expense_cn" required>
+									<span ng-messages="formExpenseTransaction.expense_cn.$error" ng-if="formExpenseTransaction.expense_cn.$dirty">
+										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">Bank <small>*</small></label>
-									<select id="expense_bank" name="expense_bank" class="form-control" data-parsley-required="true">
+									<select id="expense_bank" name="expense_bank" class="form-control" ng-model="expense_bank" required>
 										<option value="" disabled selected>Select your option</option>
-										<?php foreach ($data->get_banks() as $row_banks):?>
+										<?php foreach ($data['banks'] as $row_banks):?>
 											<option value="<?=$row_banks['bank_name']?>"><?=$row_banks['bank_name']?></option>
 										<?php endforeach;?>
 									</select>
+									<span ng-messages="formExpenseTransaction.expense_bank.$error" ng-if="formExpenseTransaction.expense_bank.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 							</div>
 						</div>
@@ -169,29 +216,35 @@
 								</div>
 								<div class="col-md-4">
 									<label for="">Payee <small>*</small></label>
-									<select id="expense_payee" name="expense_payee" class="form-control" data-parsley-required="true">
+									<select id="expense_payee" name="expense_payee" class="form-control" ng-model="expense_payee" required>
 										<option value="" disabled selected>Select your option</option>
-										<?php foreach ($data->get_expense_payee() as $row_payee):?>
+										<?php foreach ($data['payee'] as $row_payee):?>
 											<option value="<?=$row_payee['payee_name']?>"><?=$row_payee['payee_name']?></option>
 										<?php endforeach;?>
 									</select>
+									<span ng-messages="formExpenseTransaction.expense_payee.$error" ng-if="formExpenseTransaction.expense_payee.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 								<div class="col-md-4">
 									<label for="">Check Date <small>*</small></label>
-									<input type="date" id="expense_check_date" name="expense_check_date" value="<?php echo date("Y-m-d");?>" class="form-control" data-parsley-required="true">
+									<input type="date" id="expense_check_date" name="expense_check_date" class="form-control" ng-model="expense_check_date" value="<?php echo date("Y-m-d");?>" required>
+									<span ng-messages="formExpenseTransaction.expense_check_date.$error" ng-if="formExpenseTransaction.expense_check_date.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" id="data-expense--transaction" class="btn bg-green">Save Changes</button>
+						<button type="submit" onclick="InsertOrUpdateExpense()" ng-disabled="formExpenseTransaction.$invalid" id="btn-expense--transaction" class="btn bg-green">Save Changes</button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
-
+	
 	<div id="modal_expense_remarks" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
@@ -242,3 +295,7 @@
 			</div>
 		</div>
 	</div>
+
+	
+
+	

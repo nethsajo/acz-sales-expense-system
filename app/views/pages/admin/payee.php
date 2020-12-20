@@ -75,6 +75,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div id="payee-delete-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">

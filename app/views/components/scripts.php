@@ -40,6 +40,13 @@
         </script>
 
         <script type="text/javascript">
+            $('#expense_price_unit, #expense_qty').keyup(function(){
+                var price_unit = parseFloat($('#expense_price_unit').val()) || 0;
+                var qty = parseFloat($('#expense_qty').val()) || 0;
+
+                $('#expense_total_price').val((price_unit * qty).toFixed(2));    
+            });
+            
             implement_employee_datatable();
             implement_bank_datatable();
             implement_expense_category_datatable();

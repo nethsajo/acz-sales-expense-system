@@ -126,7 +126,7 @@ function InsertOrUpdateEmployee() {
             $('#employee-modal').modal('hide');
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -188,7 +188,7 @@ function UpdateEmployeeStatus() {
             $('#employee-status-modal').modal('hide');
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -215,7 +215,7 @@ function DeleteEmployeeById(employee_id) {
             notify(data.type,data.message);
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -245,7 +245,7 @@ function InsertOrUpdateBanks() {
             $('#banks-modal').modal('hide');
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -289,7 +289,7 @@ function DeleteBankById(bank_id) {
             notify(data.type,data.message);
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -319,7 +319,7 @@ function InsertOrUpdateExpenseCategory() {
             $('#category-expense-modal').modal('hide');
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -363,7 +363,7 @@ function DeleteExpenseCategoryById(category_id) {
             notify(data.type,data.message);
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -393,7 +393,7 @@ function InsertOrUpdatePayee() {
             $('#payee-modal').modal('hide');
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
         }
     });
 }
@@ -437,7 +437,40 @@ function DeletePayeeById(payee_id) {
             notify(data.type,data.message);
             setTimeout(function() {
                 location.reload();
-            }, 2000);
+            }, 3000);
+        }
+    });
+}
+
+function expense_modal() {
+    var modal = $('#expense-transaction-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formExpenseTransaction')[0].reset();
+    
+    modal.find($('#btn-expense--transaction')).html('Add Expense <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+    modal.find($('#expense_qty')).val(0);
+    modal.find($('#expense_price_unit')).val(0);
+    modal.find($('#expense_discount')).val(0);
+    modal.find($('#expense_vat')).val(0);
+}
+
+function InsertOrUpdateExpense() {
+    var data = $('#formExpenseTransaction').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdateExpenseTransaction',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-expense--transaction').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Expense';
+            $('#btn-expense--transaction').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            setTimeout(function() {
+                location.reload();
+            }, 3000);
         }
     });
 }

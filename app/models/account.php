@@ -13,6 +13,11 @@
             return $query->num_rows;
         }
 
+        public function get_units() {
+            $query = $this->db->query("SELECT * FROM tbl_units");
+            return $query;
+        }
+
         public function get_roles() {
             $query = $this->db->query("SELECT * FROM tbl_roles");
             return $query;
@@ -379,6 +384,51 @@
             $query = $this->db->query("DELETE FROM tbl_expense_payee WHERE payee_id = $payee_delete_id");
             $message = "Payee has been deleted.";
             $query ? notify('info', $message, true) : null;
+        }
+
+        //Expense Transaction
+        public function expense_transactions($data) {
+            $expense_id             = $data['expense_id']; 
+            $expense_category       = $data['expense_category'];
+            $expense_vendor         = $data['expense_vendor'];
+            $expense_tin            = $data['expense_tin'];
+            $expense_si             = $data['expense_si'];
+            $expense_or             = $data['expense_or'];
+            $expense_particular     = $data['expense_particular'];
+            $expense_unit           = $data['expense_unit'];
+            $expense_payee          = $data['expense_payee'];
+            $expense_bank           = $data['expense_bank'];
+            $expense_cvno           = $data['expense_cvno'];
+            $expense_cn             = $data['expense_cn'];
+            $expense_check_date     = $data['expense_check_date'];
+            $expense_qty            = $data['expense_qty'];
+            $expense_price_unit     = $data['expense_price_unit'];
+            $expense_discount       = $data['expense_discount'];
+            $expense_total_price    = $data['expense_total_price'];
+            $expense_vat            = $data['expense_vat'];
+            $expense_remarks        = $data['expense_remarks'];
+
+            if(empty($expense_id)) {
+                $query = $this->db->query("INSERT INTO tbl_expense_details(expense_category, expense_vendor, expense_tin, expense_si, expense_or, expense_particular, expense_unit, expense_payee, expense_bank, expense_cvno, expense_cn, expense_check_date) 
+                VALUES('$expense_category', '$expense_vendor', '$expense_tin', '$expense_si', '$expense_or', '$expense_particular', '$expense_unit', '$expense_payee', '$expense_bank', $expense_cvno, $expense_cn, '$expense_check_date')");
+                $last_insert_id = $this->db->insert_id;
+
+                if($query) {
+                    $query_transactions = $this->db->query("INSERT INTO tbl_expense_transactions(expense_qty, expense_price_unit, expense_discount, expense_vat, expense_total, expense_remarks, expense_details_id) 
+                    VALUES($expense_qty, $expense_price_unit, $expense_discount, $expense_vat, $expense_total_price, '$expense_remarks', $last_insert_id)");
+                    $message = 'Expense has been added!';
+                    $query_transactions ? notify('success', $message, true) : null;
+                } else {
+                    $message = 'Expense details has been updated.';
+                    $query = $this->db->query("UPDATE tbl_expense_details ted INNER JOIN tbl_expense_transactions tet ON (ted.expense_id = tet.expense_details_id)
+                    SET ted.expense_category = '$expense_category', ted.expense_vendor = '$expense_vendor', ted.expense_tin = '$expense_tin', ted.expense_si = '$expense_si',
+                    ted.expense_or = '$expense_or', ted.expense_particular = '$expense_particular', ted.expense_unit = '$expense_unit', ted.expense_payee = '$expense_payee', 
+                    ted.expense_bank = '$expense_bank', ted.expense_cvno = '$expense_cvno', ted.expense_cn = '$expense_cn', ted.expense_check_date = '$expense_check_date',
+                    tet.expense_qty = $expense_qty, tet.expense_price_unit = $expense_price_unit, tet.expense_discount = $expense_discount, tet.expense_vat = $expense_vat, 
+                    tet.expense_total = $expense_total_price WHERE ted.expense_id = $expense_id");
+                    $query ? notify('success', $message, true) : null;    
+                }
+            } 
         }
 
         public function post($data) {
