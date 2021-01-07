@@ -89,9 +89,9 @@
 							<td><?=$row['expense_vat'];?></td>
 							<td><?= number_format((float)$vatableAmount, 2, '.', '');?></td>
 							<td><?=$row['expense_remarks'];?></td>
-							<td style="text-align:center"><a onclick="edit_expense_by_id('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Edit"><i class="icon-pencil text-info-800"></i></a></td>
-							<td style="text-align:center"><a onclick="modal_edit_remarks('<?=$row['expense_id']?>')"" style="cursor:pointer" alt="Remarks"><i class="icon-eye text-teal-800"></i></a></td>
-							<td style="text-align:center"><a onclick="modal_delete_expense_transaction('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Remove"><i class="icon-trash text-warning-800"></i></a></td>
+							<td style="text-align:center"><a onclick="view_expense_transaction('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Edit"><i class="icon-pencil text-info-800"></i></a></td>
+							<td style="text-align:center"><a onclick="view_remarks('<?=$row['expense_id']?>')"" style="cursor:pointer" alt="Remarks"><i class="icon-eye text-teal-800"></i></a></td>
+							<td style="text-align:center"><a onclick="delete_expense_transaction('<?=$row['expense_id']?>')" style="cursor:pointer" alt="Remove"><i class="icon-trash text-warning-800"></i></a></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -276,53 +276,60 @@
 		</div>
 	</div>
 	
-	<div id="modal_expense_remarks" class="modal fade" tabindex="-1">
+	<div id="expense-remarks-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="modal-title"><i class="icon-eye mr-2"></i> &nbsp; UPDATE REMARKS</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<form method="POST" name="formExpenseRemarks" id="formExpenseRemarks" autocomplete="off" data-parsley-validate="true">
+				<form method="POST" name="formExpenseRemarks" id="formExpenseRemarks" novalidate>
+					<input type="hidden" id="token" name="token" value="<?=$data['token']?>'">
 					<div class="modal-body">
 						<div class="form-group">
 							<div class="row">
 								<div class="col-md-12">
 									<label for="">Remarks <small>*</small></label>
 									<input type="hidden" id="expense_details_id" name="expense_details_id" class="form-control"/>
-									<select id="expense_remarks" name="expense_remarks" class="form-control" data-parsley-required="true">
+									<select id="expense_remarks" name="expense_remarks" class="form-control" ng-model="expense_remarks" required>
 										<option value="" disabled selected>Select your option</option>
 										<option value="RELEASED">RELEASED</option>
 										<option value="CANCELLED">CANCELLED</option>
 									</select>
+									<span ng-messages="formExpenseRemarks.expense_remarks.$error" ng-if="formExpenseRemarks.expense_remarks.$dirty">
+										<strong ng-message="required" class="text-danger">This field is required.</strong>
+									</span>
 								</div>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" id="data-remarks--expense" class="btn bg-green">Save Changes</button>
+						<button type="submit" ng-disabled="formExpenseRemarks.$invalid" onclick="UpdateExpenseRemarks()" id="btn-expense--remarks" class="btn bg-green">Save Changes <i class="icon-arrow-right14 position-right"></i></button>
 					</div>
 				</form>
 			</div>
 		</div>
 	</div>
 
-	<div id="modal_delete_transaction" class="modal fade" tabindex="-1">
+	<div id="expense-delete-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="modal-title"><i class="icon-trash mr-2"></i> &nbsp; DELETE TRANSACTION?</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
-				<div class="modal-body">
-					<input type="hidden" id="expense_delete_id" name="expense_delete_id" class="form-control"/>
-					<p class="text-center">Are you sure do you want to delete this transaction?</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-					<button type="submit" id="data-delete--transaction" class="btn bg-green" onclick="delete_expense_transaction_by_id(this.value)">Confirm</button>
-				</div>
+				<form name="formDeleteExpense" id="formDeleteExpense" method="POST" novalidate>
+					<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
+					<div class="modal-body">
+						<input type="hidden" id="expense_delete_id" name="expense_delete_id" class="form-control"/>
+						<p class="text-center">Are you sure do you want to delete this transaction?</p>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+						<button type="submit" id="btn-delete--expense" class="btn bg-green" onclick="DeleteExpensesById(this.value)">Confirm <i class="icon-arrow-right14 position-right"></i></button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

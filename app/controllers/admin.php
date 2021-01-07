@@ -8,6 +8,10 @@
 			$_SESSION['token'] = TOKEN;
 			$this->input = $this->model('account');
 		}
+
+		public function chart() {
+			$this->model('account')->expense_chart();
+		}
 		
 		public function index() {
 			$data['token'] = $_SESSION['token'];
@@ -104,7 +108,8 @@
 		
 		public function monitoring() {
 			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Transactions';
+			$data['title'] = 'Check Monitoring';
+			$data['monitoring'] = $this->model('account')->get_check_monitoring();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -302,9 +307,31 @@
 					'expense_discount'       => $this->input->post('expense_discount'),
 					'expense_total_price'    => $this->input->post('expense_total_price'),
 					'expense_vat'            => $this->input->post('expense_vat'),
-					'expense_remarks'        => $this->input->post('expense_remarks')
+					'expense_remarks'        => ""
 				);
 				$this->model('account')->expense_transactions($data);
+			}
+		}
+
+		public function EditExpenseRemarks() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'expense_details_id'	=> $this->input->post('expense_details_id'),
+					'expense_remarks'		=> $this->input->post('expense_remarks')
+				);
+				$this->model('account')->expense_remarks($data);
+			}
+		}
+
+		public function GetExpenseTransactionById() {
+			$expense_id = $this->input->post('expense_id');
+			$this->model('account')->get_expense_transaction_by_id($expense_id);
+		}
+
+		public function DeleteExpensesById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$expense_delete_id = $this->input->post('expense_delete_id');
+				$this->model('account')->delete_expenses_by_id($expense_delete_id);
 			}
 		}
 		
@@ -313,8 +340,8 @@
 			if (ini_get("session.use_cookies")) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', time() - 42000,
-				$params["path"], $params["domain"],
-				$params["secure"], $params["httponly"]
+					$params["path"], $params["domain"],
+					$params["secure"], $params["httponly"]
 				);
 			}
 			session_destroy();

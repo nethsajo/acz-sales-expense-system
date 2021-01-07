@@ -13,6 +13,7 @@
 		<link href="<?=ASSETS?>css/layout.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=ASSETS?>css/components.min.css" rel="stylesheet" type="text/css">
 		<link href="<?=ASSETS?>css/colors.min.css" rel="stylesheet" type="text/css">
+		
 		<link href="<?=ASSETS?>toastr/css/toastr.min.css" rel="stylesheet" type="text/css">
 		<!-- /Stylesheets -->
 

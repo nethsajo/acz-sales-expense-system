@@ -100,7 +100,7 @@ function implement_expense_datatable() {
         autoWidth: false,
         columnDefs: [{ 
             orderable: false,
-            targets: [6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24]
+            targets: [0, 1, 2, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24]
         }],
         scrollX: true,
         scrollY: '400px',
@@ -116,5 +116,39 @@ function implement_expense_datatable() {
             lengthMenu: '<span>Show:</span> _MENU_',
             paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
         }
+    });
+}
+
+function implement_cm_table() {
+    var table = $('#show-cm-table').DataTable({
+        autoWidth: false,
+        responsive: true,
+        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Search</span> _INPUT_',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
+        }
+    });
+
+    $.fn.dataTable.ext.search.push(
+        function (settings, data, dataIndex) {
+            var min = $('#from').datepicker("getDate");
+            var max = $('#to').datepicker("getDate");
+            var startDate = new Date(data[0]);
+            if (min == null && max == null) return true;
+            if (min == null && startDate <= max) return true;
+            if (max == null && startDate >= min) return true;
+            if (startDate <= max && startDate >= min) return true;
+            return false;
+        }
+    );
+
+    $('#min').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+    $('#max').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+
+    // Event listener to the two range filtering inputs to redraw on input
+    $('#min, #max').change(function () {
+        table.draw();
     });
 }

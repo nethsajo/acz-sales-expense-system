@@ -8,6 +8,19 @@
             parent::__construct();
         }
 
+        public function expense_chart() {
+            $result = $this->db->query("SELECT td.expense_check_date, td.expense_category, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id WHERE tt.expense_remarks = 'RELEASED' GROUP BY td.expense_category ASC");
+            $jsonArray = array();
+            foreach($result as $row) {
+                $jsonArrayItem = array();
+                $jsonArrayItem['label'] = $row['expense_category'];
+                $jsonArrayItem['value'] = $row['sum_total'];
+                array_push($jsonArray, $jsonArrayItem);
+            }    
+            header('Content-type: application/json');
+            echo json_encode($jsonArray);
+        }
+
         public function total_employees($role) {
             $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_role_id = $role");
             return $query->num_rows;
@@ -418,17 +431,17 @@
                     VALUES($expense_qty, $expense_price_unit, $expense_discount, $expense_vat, $expense_total_price, '$expense_remarks', $last_insert_id)");
                     $message = 'Expense has been added!';
                     $query_transactions ? notify('success', $message, true) : null;
-                } else {
-                    $message = 'Expense details has been updated.';
-                    $query = $this->db->query("UPDATE tbl_expense_details ted INNER JOIN tbl_expense_transactions tet ON (ted.expense_id = tet.expense_details_id)
-                    SET ted.expense_category = '$expense_category', ted.expense_vendor = '$expense_vendor', ted.expense_tin = '$expense_tin', ted.expense_si = '$expense_si',
-                    ted.expense_or = '$expense_or', ted.expense_particular = '$expense_particular', ted.expense_unit = '$expense_unit', ted.expense_payee = '$expense_payee', 
-                    ted.expense_bank = '$expense_bank', ted.expense_cvno = '$expense_cvno', ted.expense_cn = '$expense_cn', ted.expense_check_date = '$expense_check_date',
-                    tet.expense_qty = $expense_qty, tet.expense_price_unit = $expense_price_unit, tet.expense_discount = $expense_discount, tet.expense_vat = $expense_vat, 
-                    tet.expense_total = $expense_total_price WHERE ted.expense_id = $expense_id");
-                    $query ? notify('success', $message, true) : null;    
                 }
-            } 
+            } else {
+                $message = 'Expense details has been updated.';
+                $query = $this->db->query("UPDATE tbl_expense_details ted INNER JOIN tbl_expense_transactions tet ON (ted.expense_id = tet.expense_details_id)
+                SET ted.expense_category = '$expense_category', ted.expense_vendor = '$expense_vendor', ted.expense_tin = '$expense_tin', ted.expense_si = '$expense_si',
+                ted.expense_or = '$expense_or', ted.expense_particular = '$expense_particular', ted.expense_unit = '$expense_unit', ted.expense_payee = '$expense_payee', 
+                ted.expense_bank = '$expense_bank', ted.expense_cvno = '$expense_cvno', ted.expense_cn = '$expense_cn', ted.expense_check_date = '$expense_check_date',
+                tet.expense_qty = $expense_qty, tet.expense_price_unit = $expense_price_unit, tet.expense_discount = $expense_discount, tet.expense_vat = $expense_vat, 
+                tet.expense_total = $expense_total_price WHERE ted.expense_id = $expense_id");
+                $query ? notify('success', $message, true) : null;    
+            }
         }
 
         public function get_all_expense_transactions() {
@@ -436,13 +449,36 @@
             return $query;
         }
 
-        public function post($data) {
-            $query = $this->db->real_escape_string(htmlentities($_POST[$data]));
+        public function get_expense_transaction_by_id($expense_id) {
+            $query = $this->db->query("SELECT * FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE ted.expense_id = $expense_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function expense_remarks($data) {
+            $expense_details_id = $data['expense_details_id'];
+            $expense_remarks    = $data['expense_remarks'];
+
+            $query = $this->db->query("UPDATE tbl_expense_transactions SET expense_remarks = '$expense_remarks' WHERE expense_details_id = $expense_details_id");
+            $message = "Status has been updated!";
+            $query ? notify('success', $message, true) : null;
+        }
+
+        public function delete_expenses_by_id($expense_delete_id) {
+            $query = $this->db->query("DELETE ted.*, tet.* FROM tbl_expense_details ted INNER JOIN tbl_expense_transactions tet ON ted.expense_id = tet.expense_details_id WHERE ted.expense_id = $expense_delete_id");
+            $message = "Expense has been deleted.";
+            $query ? notify('info', $message, true) : null;
+        }
+
+        public function get_check_monitoring() {
+            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM `tbl_expense_details` td INNER JOIN `tbl_expense_transactions` tt ON td.expense_id = tt.expense_details_id GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC LIMIT 0, 25");
             return $query;
+        }
+
+        public function post($data) {
+            return $data == 'comment' ? $this->db->real_escape_string($_POST[$data]) : $this->db->real_escape_string(htmlentities($_POST[$data]));
         }
 		
         public function get($data) {
-            $query = $this->db->real_escape_string(htmlentities($_GET[$data]));
-            return $query;
+            return $this->db->real_escape_string(htmlentities($_GET[$data]));
         }
     }

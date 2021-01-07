@@ -87,6 +87,38 @@ function update_password() {
     })
 }
 
+function graph() {
+    $.ajax({
+        url: url + 'chart',
+        type: 'GET',
+        success: function(data) {
+            chartData = data;
+            var chartProperties = {
+                "caption": "Expense Category Comparative",
+                "subCaption": "ACZ Digital and Printing Services",
+                "xAxisName": "Category",
+                "yAxisName": "Sum of Total",
+                "rotatevalues": "2",
+                "theme": "fint",
+                "drawcrossline": "1"
+            };
+
+            apiChart = new FusionCharts({
+                type: 'column2d',
+                renderAt: 'chart-container',
+                width: '95%',
+                height: '350',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": chartProperties,
+                    "data": chartData
+                }
+            });
+            apiChart.render();
+        }
+    });
+}
+
 function employee_modal() {
     var modal = $('#employee-modal');
     $.ajax({
@@ -444,6 +476,97 @@ function InsertOrUpdateExpense() {
             data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
             var content = data.type == 'info' ? 'Save Changes' : 'Add Expense';
             $('#btn-expense--transaction').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            modal.modal('hide');
+        }
+    });
+}
+
+function view_expense_transaction(expense_id) {
+    var modal = $('#expense-transaction-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetExpenseTransactionById', 
+        data: { expense_id : expense_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#expense_id')).val(expense_id);
+            modal.find($('#expense_vendor')).val(data.expense_vendor);
+            modal.find($('#expense_category')).val(data.expense_category);
+            modal.find($('#expense_si')).val(data.expense_si);
+            modal.find($('#expense_or')).val(data.expense_or);
+            modal.find($('#expense_tin')).val(data.expense_tin);
+            modal.find($('#expense_particular')).val(data.expense_particular);
+            modal.find($('#expense_unit')).val(data.expense_unit);
+            modal.find($('#expense_payee')).val(data.expense_payee);
+            modal.find($('#expense_bank')).val(data.expense_bank);
+            modal.find($('#expense_cvno')).val(data.expense_cvno);
+            modal.find($('#expense_cn')).val(data.expense_cn);
+            modal.find($('#expense_check_date')).val(data.expense_check_date);
+            modal.find($('#expense_qty')).val(data.expense_qty);
+            modal.find($('#expense_price_unit')).val(data.expense_price_unit);
+            modal.find($('#expense_discount')).val(data.expense_discount);
+            modal.find($('#expense_vat')).val(data.expense_vat);
+            modal.find($('#expense_total_price')).val(data.expense_total);
+            $('#modal-title').html('<i class="icon-file-spreadsheet mr-2"></i>&nbsp; UPDATE EXPENSE DETAILS');
+            $('#btn-expense--transaction').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function view_remarks(id) {
+    var modal = $('#expense-remarks-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetExpenseTransactionById', 
+        data: { expense_id : id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#expense_details_id')).val(id);
+            modal.find($('#expense_remarks')).val(data.expense_remarks);
+        }
+    }); 
+}
+
+function UpdateExpenseRemarks() {
+    var data = $('#formExpenseRemarks').serialize();
+    var modal = $('#expense-remarks-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'EditExpenseRemarks', 
+        data: data, 
+        dataType: 'json',
+        beforeSend:function() {
+            $('#btn-expense--remarks').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
+        },
+        success: function (data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            $('#btn-expense--remarks').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            modal.modal('hide');
+        }
+    });
+}
+
+function delete_expense_transaction(expense_id) {
+    var modal = $('#expense-delete-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete--expense")).val(expense_id);
+}
+
+function DeleteExpensesById(expense_id) {
+    var modal = $('#expense-delete-modal');
+    var data = { expense_delete_id : expense_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeleteExpensesById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete--payee').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            notify(data.type,data.message);
             modal.modal('hide');
         }
     });

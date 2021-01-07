@@ -12,10 +12,8 @@
         <!--/Functions JavaScript-->
 
         <!-- Theme JS files -->
+        <script src="<?=ASSETS?>js/plugins/ui/moment/moment.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/datatables.min.js"></script>
-        <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/jszip/jszip.min.js"></script>
-        <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/pdfmake/pdfmake.min.js"></script>
-        <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/pdfmake/vfs_fonts.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/buttons.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/responsive.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/fixed_columns.min.js"></script>
@@ -23,6 +21,14 @@
 
         <script src="<?=ASSETS?>js/app.js"></script>
         <script src="<?=ASSETS?>js/custom.js"></script>
+
+        <script src="<?=ASSETS?>graph/fusioncharts.js"></script>
+        <script src="<?=ASSETS?>graph/fusioncharts.charts.js"></script>
+        <script src="<?=ASSETS?>graph/themes/fusioncharts.theme.zune.js"></script>
+        <script src="<?=ASSETS?>graph/themes/fusioncharts.theme.ocean.js"></script>
+        <script src="<?=ASSETS?>graph/themes/fusioncharts.theme.carbon.js"></script>
+        <script src="<?=ASSETS?>graph/themes/fusioncharts.theme.fint.js"></script>
+        <script src="<?=ASSETS?>js/jquery-ui.js"></script>
         <!-- Theme JS files -->
 
         <!--Parsley Validation-->
@@ -33,10 +39,15 @@
         <script src="<?=ASSETS?>js/amaran/jquery.amaran.min.js"></script>
         <!-- /Amaran Notification-->
         <script type="text/javascript">
+            $('#from').datepicker({ dateFormat: 'yy-mm-dd' });
+            $('#to').datepicker({ dateFormat: 'yy-mm-dd' });
+
             var app = angular.module('app', ['ngMessages']);
             app.controller('mainController',function($scope){});
 
             toastr_option();
+
+            graph();
         </script>
 
         <script type="text/javascript">
@@ -53,6 +64,7 @@
             implement_payee_datatable();
             implement_logs_datatable();
             implement_expense_datatable();
+            implement_cm_table();
         </script>
     </body>
 </html>

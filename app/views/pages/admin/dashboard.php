@@ -21,7 +21,7 @@
 
 	<div class="content">
 		<div class="row">
-			<div class="col-sm-6 col-xl-3">
+			<div class="col-sm-6 col-xl-4">
 				<div class="card card-body">
 					<div class="media">
 						<div class="mr-3 align-self-center">
@@ -36,7 +36,7 @@
 				</div>
 			</div>
 
-			<div class="col-sm-6 col-xl-3">
+			<div class="col-sm-6 col-xl-4">
 				<div class="card card-body">
 					<div class="media">
 						<div class="mr-3 align-self-center">
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 
-			<div class="col-sm-6 col-xl-3">
+			<div class="col-sm-6 col-xl-4">
 				<div class="card card-body">
 					<div class="media">
 						<div class="media-body">
@@ -65,50 +65,29 @@
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<div class="col-sm-6 col-xl-3">
-				<div class="card card-body">
-					<div class="media">
-						<div class="media-body">
-							<h3 class="font-weight-semibold mb-0">0</h3>
-							<span class="text-uppercase font-size-sm text-muted">Sample Data</span>
-						</div>
+		
+		<div class="card">
+			<div class="card-header header-elements-inline">
+				<h6 class="card-title"></h6>
+			</div>
 
-						<div class="ml-3 align-self-center">
-							<i class="icon-bag icon-3x text-danger-400"></i>
-						</div>
-					</div>
+			<div class="card-body py-0">
+				<div class="row">
+					<div id="chart-container"></div>
 				</div>
 			</div>
 		</div>
-
-		<div class="row">
-			<div class="col-xl-6">
-				<div class="card">
-					<div class="card-header header-elements-inline">
-						<h6 class="card-title">Sample</h6>
-					</div>
-
-					<div class="card-body py-0">
-						<div class="row">
-						   
-						</div>
-					</div>
-					<div class="chart position-relative" id="traffic-sources"></div>
-				</div>
+			
+		<div class="card">
+			<div class="card-header header-elements-inline">
+				<h6 class="card-title">Sample Data</h6>
 			</div>
 
-			<div class="col-xl-6">
-				<div class="card">
-					<div class="card-header header-elements-inline">
-						<h6 class="card-title">Sample Data</h6>
-					</div>
-
-					<div class="card-body py-0">
-						<div class="row text-center">
-							
-						</div>
-					</div>
+			<div class="card-body py-0">
+				<div class="row text-center">
+					
 				</div>
 			</div>
 		</div>

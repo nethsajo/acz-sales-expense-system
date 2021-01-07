@@ -16,6 +16,7 @@
 	require_once 'core/PHPMailer/Exception.php';
 	require_once 'core/PHPMailer/PHPMailer.php';
 	require_once 'core/PHPMailer/SMTP.php';
+	require_once 'core/tcpdf/tcpdf.php';
 	
 	
 

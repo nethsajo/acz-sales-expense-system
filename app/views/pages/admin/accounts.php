@@ -203,7 +203,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" ng-disabled="formEmployeeStatus.$invalid" onclick="UpdateEmployeeStatus()" id="btn-employee--status" class="btn bg-green">Save Changes</button>
+						<button type="submit" ng-disabled="formEmployeeStatus.$invalid" onclick="UpdateEmployeeStatus()" id="btn-employee--status" class="btn bg-green">Save Changes <i class="icon-arrow-right14 position-right"></i></button>
 					</div>
 				</form>
 			</div>
@@ -218,14 +218,14 @@
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<form name="formDeleteEmployee" id="formDeleteEmployee" method="POST" novalidate>
+					<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
 					<div class="modal-body">
-						<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
 						<input type="hidden" id="employee_delete_id" name="employee_delete_id" class="form-control"/>
 						<p class="text-center">Are you sure do you want to delete this employee?</p>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" id="btn-delete--employee" class="btn bg-green" onclick="DeleteEmployeeById(this.value)">Confirm</button>
+						<button type="submit" id="btn-delete--employee" class="btn bg-green" onclick="DeleteEmployeeById(this.value)">Confirm <i class="icon-arrow-right14 position-right"></i></button>
 					</div>
 				</form>
 			</div>
