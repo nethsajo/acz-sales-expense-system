@@ -470,7 +470,15 @@
         }
 
         public function get_check_monitoring() {
-            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM `tbl_expense_details` td INNER JOIN `tbl_expense_transactions` tt ON td.expense_id = tt.expense_details_id GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC LIMIT 0, 25");
+            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC LIMIT 0, 25");
+            return $query;
+        }
+
+        public function get_monitoring($data) {
+            $from   = $data['from'];
+            $to     = $data['to'];
+
+            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id WHERE td.expense_check_date BETWEEN '$from' AND '$to' GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC");
             return $query;
         }
 

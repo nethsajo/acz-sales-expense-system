@@ -158,6 +158,56 @@
 			$this->view('components/scripts',$data);
 		}
 
+		public function reports() {
+			$from 	= $_POST['from'];
+			$to		= $_POST['to'];
+
+			$monitoring = array('from' => $from, 'to' => $to);
+			$check_monitoring = $this->model('account')->get_monitoring($monitoring);
+			
+			$from_date = date('F d, Y',strtotime($from));
+        	$to_date  = date('F d, Y',strtotime($to));
+        
+        	$pdf = new TCPDF('P','mm','Legal');
+			$pdf->AddPage();
+			$pdf->SetFont('helvetica','B',10);
+			$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+			$pdf->SetFont('helvetica','B',13);
+			$pdf->cell(190,5,'ACZ Digital and Printing Services',0,1,'C');
+			$pdf->SetFont('helvetica','B',10);
+			$pdf->cell(190,5,'Block 9 Lot 20 Juana Complex 3A Brgy. San Francisco City of Binãn, Laguna',0,1,'C');
+			$pdf->SetFont('helvetica','B',10);
+			$pdf->cell(190,5,'Mobile No. (+63) 933-8566-850',0,1,'C');
+			$pdf->cell(190,5,'',0,1,'C');
+			$pdf->cell(190,5,'',0,1,'C');
+			$pdf->SetFont('helvetica','B',15);
+			$pdf->cell(190,5,'CHECK MONITORING',0,1,'C');
+			$pdf->SetFont('helvetica','B',10);
+			$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
+			$pdf->cell(190,5,'',0,1,'C');
+			$pdf->SetFont('helvetica','B',10);
+			
+			$tbl = <<<EOD
+			<table style="border:1px solid #000">
+				<tr>
+					<th style="border:1px solid #000">CHECK DATE</th>
+					<th style="border:1px solid #000">CHECK NUMBER</th>
+					<th style="border:1px solid #000">VENDOR</th>
+					<th style="border:1px solid #000">SUM OF TOTAL</th>
+				</tr>
+				<tr>
+					<td style="border:1px solid #000">Try</td>
+					<td style="border:1px solid #000">Try</td>
+					<td style="border:1px solid #000">Try</td>
+					<td style="border:1px solid #000">Try</td>
+				</tr>
+			</table> 
+			EOD;
+			
+			$pdf->writeHTML($tbl, true, false, false, false, '');
+			$pdf->Output(); 
+		}
+
 		public function GenerateEmployeeNumber() {
 			$this->model('account')->generate_employee_number();
 		}

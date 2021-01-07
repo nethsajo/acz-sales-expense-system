@@ -25,36 +25,38 @@
 	<div class="content">
 		<div class="card">
 			<div class="card-body">
-				<div class="row">
-					<div class="col-md-5">
-						<div class="form-group">
-							<label>From:</label>
-							<div class="input-group">
-								<span class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-calendar22"></i></span>
-								</span>
-								<input type="text" class="form-control" name="from" id="from">
+				<form method="POST" action="<?=URL?>admin/reports" autocomplete="off"> 
+					<div class="row">
+						<div class="col-md-5">
+							<div class="form-group">
+								<label>From:</label>
+								<div class="input-group">
+									<span class="input-group-prepend">
+										<span class="input-group-text"><i class="icon-calendar22"></i></span>
+									</span>
+									<input type="text" class="form-control" name="from" id="from">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<div class="form-group">
+								<label>To:</label>
+								<div class="input-group">
+									<span class="input-group-prepend">
+										<span class="input-group-text"><i class="icon-calendar22"></i></span>
+									</span>
+									<input type="text" class="form-control" name="to" id="to">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-group">
+								<label>&nbsp;</label>
+								<button type="submit" class="btn bg-green btn-block">Print <i class="icon-printer position-right ml-2"></i></button>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-5">
-						<div class="form-group">
-							<label>To:</label>
-							<div class="input-group">
-								<span class="input-group-prepend">
-									<span class="input-group-text"><i class="icon-calendar22"></i></span>
-								</span>
-								<input type="text" class="form-control" name="to" id="to">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-2">
-						<div class="form-group">
-							<label>&nbsp;</label>
-							<button type="submit" class="btn bg-green btn-block">Print <i class="icon-printer position-right ml-2"></i></button>
-						</div>
-					</div>
-				</div>
+				</form>
 			</div>
 			<table id="show-cm-table" class="table datatable-basic">
 				<thead>

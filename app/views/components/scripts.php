@@ -39,9 +39,6 @@
         <script src="<?=ASSETS?>js/amaran/jquery.amaran.min.js"></script>
         <!-- /Amaran Notification-->
         <script type="text/javascript">
-            $('#from').datepicker({ dateFormat: 'yy-mm-dd' });
-            $('#to').datepicker({ dateFormat: 'yy-mm-dd' });
-
             var app = angular.module('app', ['ngMessages']);
             app.controller('mainController',function($scope){});
 
