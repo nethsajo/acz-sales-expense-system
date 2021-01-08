@@ -68,7 +68,8 @@
 									<a href="#" class="nav-link">Reports</a>
 									<ul class="nav nav-group-sub">
 										<li class="nav-item"><a href="<?=URL?>admin/monitoring" class="nav-link <?= $data['title'] == 'Check Monitoring' ? 'active' : '';?>">Check Monitoring</a></li>
-										<li class="nav-item"><a href="<?=URL?>admin/reports" class="nav-link <?= $data['title'] == 'Reports' ? 'active' : '';?>">Monthly and Yearly Expense Report</a></li>
+										<li class="nav-item"><a href="<?=URL?>admin/filter_monthly" class="nav-link <?= $data['title'] == 'Monthly Expense Report' ? 'active' : '';?>">Monthly Expense Report</a></li>
+										<li class="nav-item"><a href="<?=URL?>admin/filter_yearly" class="nav-link <?= $data['title'] == 'Yearly Expense Report' ? 'active' : '';?>">Yearly Expense Report</a></li>
 									</ul>
 								</li>
 							</ul>

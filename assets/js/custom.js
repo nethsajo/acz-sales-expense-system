@@ -155,3 +155,24 @@ function implement_cm_table() {
         table.draw();
     });
 }
+
+function implement_emr_table() {
+    $('#show-emr-table').DataTable({
+        autoWidth: false,
+        responsive: true,
+        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Search</span> _INPUT_',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
+        }
+    });
+}
+
+implement_employee_datatable();
+implement_bank_datatable();
+implement_expense_category_datatable();
+implement_payee_datatable();
+implement_logs_datatable();
+implement_expense_datatable();
+implement_emr_table();

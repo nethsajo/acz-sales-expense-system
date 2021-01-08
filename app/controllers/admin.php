@@ -176,9 +176,9 @@
 			$pdf->SetFont('helvetica','B',13);
 			$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
 			$pdf->SetFont('helvetica','',10);
-			$pdf->cell(190,5,'Block 9 Lot 20 Juana Complex 3A Brgy. San Francisco City of Binãn, Laguna',0,1,'C');
+			$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco City of Binãn, Laguna',0,1,'C');
 			$pdf->SetFont('helvetica','B',10);
-			$pdf->cell(190,5,'Mobile No. (+63) 933-8566-850',0,1,'C');
+			$pdf->cell(190,5,'Mobile No. 632-529-0303 | 0923-741-0890',0,1,'C');
 			$pdf->cell(190,5,'',0,1,'C');
 			$pdf->cell(190,5,'',0,1,'C');
 			$pdf->SetFont('helvetica','B',15);
@@ -203,7 +203,7 @@
 						<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
 						<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
 						<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
-						<td style="border:1px solid #000">'.$row['sum_total'].'</td>
+						<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
 					</tr>';
 				}
 			
@@ -215,6 +215,18 @@
 			$pdf->cell(165, 8, 'Total Expenses', 1, 0);
 			$pdf->cell(25, 8, number_format($sum_total, 2), 1, 1,'C');
 			$pdf->Output(); 
+		}
+
+		public function filter_monthly() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Monthly Expense Report';
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/expense-monthly-report',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
 		}
 
 		public function GenerateEmployeeNumber() {

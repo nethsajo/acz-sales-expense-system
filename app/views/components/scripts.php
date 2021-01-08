@@ -54,13 +54,6 @@
 
                 $('#expense_total_price').val((price_unit * qty).toFixed(2));    
             });
-            
-            implement_employee_datatable();
-            implement_bank_datatable();
-            implement_expense_category_datatable();
-            implement_payee_datatable();
-            implement_logs_datatable();
-            implement_expense_datatable();
 
             $(document).ready(function(){
                 implement_cm_table();
