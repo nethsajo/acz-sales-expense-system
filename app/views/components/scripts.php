@@ -61,7 +61,10 @@
             implement_payee_datatable();
             implement_logs_datatable();
             implement_expense_datatable();
-            implement_cm_table();
+
+            $(document).ready(function(){
+                implement_cm_table();
+            });
         </script>
     </body>
 </html>

@@ -25,7 +25,7 @@
 	<div class="content">
 		<div class="card">
 			<div class="card-body">
-				<form method="POST" action="<?=URL?>admin/reports" autocomplete="off"> 
+				<form name="formCheckMonitoring" method="POST" action="<?=URL?>admin/reports" autocomplete="off" novalidate> 
 					<div class="row">
 						<div class="col-md-5">
 							<div class="form-group">

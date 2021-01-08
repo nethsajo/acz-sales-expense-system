@@ -143,10 +143,13 @@ function implement_cm_table() {
             return false;
         }
     );
+    
+    $('#from').datepicker({ dateFormat: 'yy-mm-dd', onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
+    $('#to').datepicker({ dateFormat: 'yy-mm-dd', onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
 
-    $('#from').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-    $('#to').datepicker({ onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-
+    $("#from").datepicker().datepicker("setDate", new Date());
+    $("#to").datepicker().datepicker("setDate", new Date());
+    
     // Event listener to the two range filtering inputs to redraw on input
     $('#from, #to').change(function () {
         table.draw();
