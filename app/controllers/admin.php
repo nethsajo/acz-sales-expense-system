@@ -168,7 +168,9 @@
 			$from_date = date('F d, Y',strtotime($from));
         	$to_date  = date('F d, Y',strtotime($to));
         
-        	$pdf = new TCPDF('P','mm','Legal');
+			$pdf = new TCPDF('P','mm','Legal');
+			$pdf->SetPrintHeader(false);
+			$pdf->SetPrintFooter(false);
 			$pdf->AddPage();
 			ob_start();
 			$pdf->SetFont('helvetica','B',10);
@@ -176,9 +178,9 @@
 			$pdf->SetFont('helvetica','B',13);
 			$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
 			$pdf->SetFont('helvetica','',10);
-			$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco City of Binãn, Laguna',0,1,'C');
+			$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
 			$pdf->SetFont('helvetica','B',10);
-			$pdf->cell(190,5,'Mobile No. 632-529-0303 | 0923-741-0890',0,1,'C');
+			$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
 			$pdf->cell(190,5,'',0,1,'C');
 			$pdf->cell(190,5,'',0,1,'C');
 			$pdf->SetFont('helvetica','B',15);
@@ -214,19 +216,159 @@
 			$pdf->SetFont('helvetica','B',10);
 			$pdf->cell(165, 8, 'Total Expenses', 1, 0);
 			$pdf->cell(25, 8, number_format($sum_total, 2), 1, 1,'C');
-			$pdf->Output(); 
+			$pdf->Output('Check-Monitoring-'.$from_date.'-'.$to_date.'.pdf', 'I'); 
 		}
 
-		public function filter_monthly() {
+		public function filter_expense_report() {
 			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Monthly Expense Report';
+			$data['title'] = 'Monthly and Yearly Expense Report';
+			$data['report'] = $this->model('account')->get_monthly_expense_report();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/expense-monthly-report',$data);
+			$this->view('pages/admin/expense-generate-report',$data);
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
+		}
+
+		public function expense_generate_report() {
+			if(isset($_POST['from_month']) && ($_POST['from_year'])) {
+				$from_month = $_POST['from_month'];
+				$from_year	= $_POST['from_year'];
+
+				$range = array('from_month' => $from_month, 'from_year' => $from_year);
+
+				$expense_monthly_report = $this->model('account')->get_expense_monthly_report($range);
+	
+				$month = date("F", mktime(0, 0, 0, $from_month, 10));
+			
+				$pdf = new TCPDF('P','mm','Legal');
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+				$pdf->AddPage();
+				ob_start();
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+				$pdf->SetFont('helvetica','B',13);
+				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190,5,'SUMMARY OF EXPENSES',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,''.$month.' '.$from_year.'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B', 10);
+	
+				$tbl .= '
+					<table style="border:1px solid #000">
+						<tr>
+							<th style="border:1px solid #000">Check Voucher</th>
+							<th style="border:1px solid #000">Check Number</th>
+							<th style="border:1px solid #000">Check Date</th>
+							<th style="border:1px solid #000">Date</th>
+							<th style="border:1px solid #000">Vendor</th>
+							<th style="border:1px solid #000">TIN</th>
+							<th style="border:1px solid #000">SI</th>
+							<th style="border:1px solid #000">OR</th>
+							<th style="border:1px solid #000">Sum of Total</th>
+						</tr>';
+					foreach($expense_monthly_report as $row) {
+						$date = $row['expense_date'];
+						$monthly_sum_total = $row['sum_total'];
+						$tbl .= '
+						<tr>
+							<td style="border:1px solid #000">'.$row['expense_cvno'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
+							<td style="border:1px solid #000">'.$date = date( "m-d-Y", strtotime($date)).'</td>
+							<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_tin'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_si'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_or'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
+						</tr>';
+					}
+				$tbl .= '</table>'; 
+				ob_end_clean();
+				$pdf->writeHTML($tbl, true, false, false, false, '');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(165, 8, 'Grand Total', 1, 0);
+				$pdf->cell(25, 8, number_format($monthly_sum_total, 2), 1, 1,'C');
+				$pdf->Output('Expense-Report-'.$month.'-'.$from_year.'.pdf', 'I');
+
+			} else if(!isset($_POST['from_month']) && isset($_POST['from_year'])) {
+				$from_year	= $_POST['from_year'];
+
+				$range = array('from_year' => $from_year);
+
+				$expense_yearly_report = $this->model('account')->get_expense_yearly_report($range);
+
+				$pdf = new TCPDF('P','mm','Legal');
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+				$pdf->AddPage();
+				ob_start();
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+				$pdf->SetFont('helvetica','B',13);
+				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190,5,'SUMMARY OF EXPENSES',0,1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,''.$from_year.'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$tbl .= '
+					<table style="border:1px solid #000">
+						<tr>
+							<th style="border:1px solid #000">Check Voucher</th>
+							<th style="border:1px solid #000">Check Number</th>
+							<th style="border:1px solid #000">Check Date</th>
+							<th style="border:1px solid #000">Date</th>
+							<th style="border:1px solid #000">Vendor</th>
+							<th style="border:1px solid #000">TIN</th>
+							<th style="border:1px solid #000">SI</th>
+							<th style="border:1px solid #000">OR</th>
+							<th style="border:1px solid #000">Sum of Total</th>
+						</tr>';
+					foreach($expense_yearly_report as $row) {
+						$date = $row['expense_date'];
+						$yearly_sum_total += $row['sum_total'];
+						$tbl .= '
+						<tr>
+							<td style="border:1px solid #000">'.$row['expense_cvno'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
+							<td style="border:1px solid #000">'.$date = date( "m-d-Y", strtotime($date)).'</td>
+							<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_tin'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_si'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_or'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
+						</tr>';
+					}
+				$tbl .= '</table>'; 
+				ob_end_clean();
+				$pdf->writeHTML($tbl, true, false, false, false, '');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(165, 8, 'Grand Total', 1, 0);
+				$pdf->cell(25, 8, number_format($yearly_sum_total, 2), 1, 1,'C');
+				$pdf->Output('Expense-Report-'.$from_year.'.pdf', 'I');
+			} else {
+				redirect('admin/filter_report');
+			}
 		}
 
 		public function GenerateEmployeeNumber() {

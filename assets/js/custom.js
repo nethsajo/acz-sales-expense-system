@@ -119,7 +119,7 @@ function implement_expense_datatable() {
     });
 }
 
-function implement_cm_table() {
+function implement_cm_datatable() {
     var table = $('#show-cm-table').DataTable({
         autoWidth: false,
         responsive: true,
@@ -130,36 +130,18 @@ function implement_cm_table() {
             paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
         }
     });
-
-    $.fn.dataTable.ext.search.push(
-        function (settings, data, dataIndex) {
-            var min = $('#from').datepicker("getDate");
-            var max = $('#to').datepicker("getDate");
-            var startDate = new Date(data[0]);
-            if (min == null && max == null) return true;
-            if (min == null && startDate <= max) return true;
-            if (max == null && startDate >= min) return true;
-            if (startDate <= max && startDate >= min) return true;
-            return false;
-        }
-    );
-    
-    $('#from').datepicker({ dateFormat: 'yy-mm-dd', onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-    $('#to').datepicker({ dateFormat: 'yy-mm-dd', onSelect: function () { table.draw(); }, changeMonth: true, changeYear: true });
-
-    $("#from").datepicker().datepicker("setDate", new Date());
-    $("#to").datepicker().datepicker("setDate", new Date());
-    
-    // Event listener to the two range filtering inputs to redraw on input
-    $('#from, #to').change(function () {
-        table.draw();
-    });
 }
 
-function implement_emr_table() {
-    $('#show-emr-table').DataTable({
+function implement_emr_datatable() {
+    var table = $('#show-emr-table').DataTable({
         autoWidth: false,
-        responsive: true,
+        orderable: false,
+        scrollX: true,
+        scrollY: '400px',
+        scrollCollapse: true,
+        fixedColumns: {
+            leftColumns: 3,
+        },
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
         language: {
             search: '<span>Search</span> _INPUT_',
@@ -168,11 +150,3 @@ function implement_emr_table() {
         }
     });
 }
-
-implement_employee_datatable();
-implement_bank_datatable();
-implement_expense_category_datatable();
-implement_payee_datatable();
-implement_logs_datatable();
-implement_expense_datatable();
-implement_emr_table();

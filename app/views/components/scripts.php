@@ -56,8 +56,21 @@
             });
 
             $(document).ready(function(){
-                implement_cm_table();
+                $('#from').datepicker({ dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true });
+                $('#to').datepicker({ dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true });
+
+                $("#from").datepicker().datepicker("setDate", new Date());
+                $("#to").datepicker().datepicker("setDate", new Date());
             });
+
+            implement_employee_datatable();
+            implement_bank_datatable();
+            implement_expense_category_datatable();
+            implement_payee_datatable();
+            implement_logs_datatable();
+            implement_expense_datatable();
+            implement_cm_datatable();
+            implement_emr_datatable();
         </script>
     </body>
 </html>

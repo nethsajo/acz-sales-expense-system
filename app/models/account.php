@@ -482,6 +482,26 @@
             return $query;
         }
 
+        public function get_monthly_expense_report() {
+            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_vendor, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id GROUP BY ted.expense_check_date ORDER BY ted.expense_check_date ASC");
+            return $query;
+        }
+
+        public function get_expense_monthly_report($data) {
+            $from_month  = $data['from_month'];
+            $from_year   = $data['from_year'];
+
+            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE MONTH(ted.expense_check_date) = '$from_month' AND YEAR(ted.expense_check_date) = '$from_year' AND te.expense_remarks = 'RELEASED' GROUP BY ted.expense_check_date");
+            return $query;
+        }
+
+        public function get_expense_yearly_report($data) {
+            $from_year   = $data['from_year'];
+
+            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE YEAR(ted.expense_check_date) = '$from_year' AND te.expense_remarks = 'RELEASED' GROUP BY ted.expense_check_date");
+            return $query;
+        }
+
         public function post($data) {
             return $data == 'comment' ? $this->db->real_escape_string($_POST[$data]) : $this->db->real_escape_string(htmlentities($_POST[$data]));
         }
