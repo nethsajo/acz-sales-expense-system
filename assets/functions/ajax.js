@@ -572,6 +572,83 @@ function DeleteExpensesById(expense_id) {
     });
 }
 
+//Sales
+function sales_modal() {
+    var modal = $('#sales-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formSales')[0].reset();
+    
+    modal.find($('#btn-sales')).html('Add Sales <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+    modal.find($('#sales_width')).val(0);
+    modal.find($('#sales_height')).val(0);
+    modal.find($('#sales_price_unit')).val(0);
+    modal.find($('#sales_qty')).val(0);
+    modal.find($('#sales_vat')).val(0);
+    modal.find($('#sales_amount_due')).val(0);
+    modal.find($('#sales_discount')).val(0);
+    modal.find($('#sales_net_amount')).val(0);
+}
+
+function InsertOrUpdateSales() {
+    var data = $('#formSales').serialize();
+    var modal = $('#sales-modal');
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdateSales',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-sales').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Sales';
+            $('#btn-sales').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            modal.modal('hide');
+        }
+    });
+}
+
+function view_sales(sales_id) {
+    var modal = $('#sales-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetSalesById', 
+        data: { sales_id : sales_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#sales_id')).val(sales_id);
+            modal.find($('#sales_po')).val(data.sales_po);
+            modal.find($('#sales_so')).val(data.sales_so);
+            modal.find($('#sales_dr')).val(data.sales_dr);
+            modal.find($('#sales_si')).val(data.sales_si);
+            modal.find($('#sales_particulars')).val(data.sales_particulars);
+            modal.find($('#sales_media')).val(data.sales_media);
+            modal.find($('#sales_width')).val(data.sales_width);
+            modal.find($('#sales_height')).val(data.sales_height);
+            modal.find($('#sales_unit')).val(data.sales_unit);
+            modal.find($('#sales_total_area')).val(data.sales_total_area);
+            modal.find($('#sales_price_unit')).val(data.sales_price_unit);
+            modal.find($('#sales_sub_total')).val((parseFloat(data.sales_total_area) * parseFloat(data.sales_price_unit)).toFixed(2));
+            modal.find($('#sales_qty')).val(data.sales_qty);
+            modal.find($('#sales_total')).val(data.sales_total);
+            modal.find($('#sales_vat')).val(data.sales_vat);
+            modal.find($('#sales_amount_due')).val((parseFloat(data.sales_total) + parseFloat(data.sales_vat)).toFixed(2));
+            modal.find($('#sales_discount')).val(data.sales_discount);
+            modal.find($('#sales_net_amount')).val(data.sales_net_amount);
+            $('#modal-title').html('<i class="icon-add-to-list mr-2"></i>&nbsp; UPDATE SALES DETAILS');
+            $('#btn-sales').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function view_payment(sales_id) {
+    var modal = $('#payment-sales-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formPayment')[0].reset();
+}
+
 function notify(type,message) {
     Command: toastr[type](message)
 }

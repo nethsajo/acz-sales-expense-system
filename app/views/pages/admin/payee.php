@@ -50,7 +50,7 @@
 	<div id="payee-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-pencil7 mr-2"></i> &nbsp; ADD PAYEE</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
@@ -79,7 +79,7 @@
 	<div id="payee-delete-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-trash mr-2"></i> &nbsp; DELETE PAYEE?</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>

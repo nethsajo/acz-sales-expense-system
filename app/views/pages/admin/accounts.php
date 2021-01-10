@@ -60,7 +60,7 @@
 	<div id="employee-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-people mr-2"></i> &nbsp;ADD EMPLOYEE</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>

@@ -98,10 +98,7 @@ function implement_logs_datatable() {
 function implement_expense_datatable() {
     $('#show-expense-transactions-table').DataTable({
         autoWidth: false,
-        columnDefs: [{ 
-            orderable: false,
-            targets: [0, 1, 2, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24]
-        }],
+        ordering: false,
         scrollX: true,
         scrollY: '400px',
         scrollCollapse: true,
@@ -120,7 +117,7 @@ function implement_expense_datatable() {
 }
 
 function implement_cm_datatable() {
-    var table = $('#show-cm-table').DataTable({
+    $('#show-cm-table').DataTable({
         autoWidth: false,
         responsive: true,
         dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
@@ -133,9 +130,9 @@ function implement_cm_datatable() {
 }
 
 function implement_emr_datatable() {
-    var table = $('#show-emr-table').DataTable({
+    $('#show-emr-table').DataTable({
         autoWidth: false,
-        orderable: false,
+        ordering: false,
         scrollX: true,
         scrollY: '400px',
         scrollCollapse: true,
@@ -147,6 +144,27 @@ function implement_emr_datatable() {
             search: '<span>Search</span> _INPUT_',
             lengthMenu: '<span>Show:</span> _MENU_',
             paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
+        }
+    });
+}
+
+function implement_sales_datatable() {
+    $('#show-sales-table').DataTable({
+        autoWidth: false,
+        ordering: false,
+        scrollX: true,
+        scrollY: '450px',
+        scrollCollapse: true,
+        fixedColumns: {
+            leftColumns: 5,
+            rightColumns: 3
+        },
+        dom: '<"datatable-header"fl><"datatable-scroll datatable-scroll-wrap"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Filter:</span> _INPUT_',
+            searchPlaceholder: 'Type to filter...',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
         }
     });
 }

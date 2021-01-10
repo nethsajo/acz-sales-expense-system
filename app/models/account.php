@@ -502,6 +502,51 @@
             return $query;
         }
 
+        public function sales_transactions($data) {
+            $sales_id 			= $data['sales_id'];
+            $sales_po			= $data['sales_po'];
+            $sales_so			= $data['sales_so'];
+            $sales_dr			= $data['sales_dr'];
+            $sales_si			= $data['sales_si'];
+            $sales_company		= $data['sales_company'];
+            $sales_cp			= $data['sales_cp'];
+            $sales_particulars	= $data['sales_particulars'];
+            $sales_media		= $data['sales_media'];
+            $sales_width		= $data['sales_width'];
+            $sales_height		= $data['sales_height'];
+            $sales_unit		    = $data['sales_unit'];
+            $sales_total_area	= $data['sales_total_area'];
+            $sales_price_unit	= $data['sales_price_unit'];
+            $sales_qty			= $data['sales_qty'];
+            $sales_total		= $data['sales_total'];
+            $sales_vat			= $data['sales_vat'];
+            $sales_discount	    = $data['sales_discount'];
+            $sales_net_amount	= $data['sales_net_amount'];
+
+            if(empty($sales_id)) {
+                $query = $this->db->query("INSERT INTO tbl_sales (sales_po, sales_so, sales_dr, sales_si, sales_company, sales_cp, sales_particulars, sales_media, sales_width, sales_height, sales_unit, sales_total_area, sales_price_unit, sales_qty, sales_total, sales_vat, sales_discount, sales_net_amount) 
+                VALUES ('$sales_po', '$sales_so', '$sales_dr', '$sales_si', '$sales_company', '$sales_cp', '$sales_particulars', '$sales_media', $sales_width, $sales_height, '$sales_unit', $sales_total_area, $sales_price_unit, $sales_qty, $sales_total, $sales_vat, $sales_discount, $sales_net_amount)");
+                $message = 'Sale has been added!';
+                $query ? notify('success', $message, true) : null;
+            } else {
+                $message = 'Successfully updated!';
+                $query = $this->db->query("UPDATE tbl_sales SET sales_po = '$sales_po', sales_so = '$sales_so', sales_dr = '$sales_dr', sales_si = '$sales_si', sales_company = '$sales_company', sales_cp = '$sales_cp', sales_particulars = '$sales_particulars', sales_media = '$sales_media',
+                sales_width = $sales_width, sales_height = $sales_height, sales_unit = '$sales_unit', sales_total_area = $sales_total_area, sales_price_unit = $sales_price_unit, sales_qty = $sales_qty, sales_total = $sales_total, sales_vat = $sales_vat, sales_discount = $sales_discount, 
+                sales_net_amount = $sales_net_amount WHERE sales_id = $sales_id");
+                $query ? notify('success', $message, true) : null;
+            }
+        }
+
+        public function get_all_sales_transactions() {
+            $query = $this->db->query("SELECT * FROM tbl_sales");
+            return $query;
+        }
+
+        public function get_sales_by_id($sales_id) {
+            $query = $this->db->query("SELECT * FROM tbl_sales WHERE sales_id = $sales_id");
+            echo json_encode($query->fetch_object());
+        }
+
         public function post($data) {
             return $data == 'comment' ? $this->db->real_escape_string($_POST[$data]) : $this->db->real_escape_string(htmlentities($_POST[$data]));
         }

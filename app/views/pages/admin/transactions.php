@@ -102,7 +102,7 @@
 	<div id="expense-transaction-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-lg">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-file-spreadsheet mr-2"></i> &nbsp; ADD EXPENSE DETAILS</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
@@ -279,7 +279,7 @@
 	<div id="expense-remarks-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-eye mr-2"></i> &nbsp; UPDATE REMARKS</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
@@ -315,7 +315,7 @@
 	<div id="expense-delete-modal" class="modal fade" tabindex="-1">
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
-				<div class="modal-header">
+				<div class="modal-header bg-green-600">
 					<h5 class="modal-title" id="modal-title"><i class="icon-trash mr-2"></i> &nbsp; DELETE TRANSACTION?</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
