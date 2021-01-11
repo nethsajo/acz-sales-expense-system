@@ -40,7 +40,9 @@
         <!-- /Amaran Notification-->
         <script type="text/javascript">
             var app = angular.module('app', ['ngMessages']);
-            app.controller('mainController',function($scope){});
+            app.controller('mainController',function($scope){
+                
+            });
 
             toastr_option();
 
@@ -106,6 +108,7 @@
                 implement_cm_datatable();
                 implement_emr_datatable();
                 implement_sales_datatable();
+                implement_payment_datatable();
             });
         </script>
     </body>

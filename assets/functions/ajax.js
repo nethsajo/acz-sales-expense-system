@@ -643,10 +643,58 @@ function view_sales(sales_id) {
     });
 }
 
-function view_payment(sales_id) {
+function view_payment(payment_sales_id) {
     var modal = $('#payment-sales-modal');
-    modal.modal({ backdrop: 'static', keyboard: false});
-    $('#formPayment')[0].reset();
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetPaymentDetailsById', 
+        data: { payment_sales_id : payment_sales_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#payment_sales_id')).val(payment_sales_id);
+            modal.find($('#payment_net_amount')).val(data.sales_net_amount);
+            modal.find($('#payment_balance')).val(data.sales_balance);
+        }
+    });
+}
+
+function InsertPaymentSales() {
+    var data = $('#formPayment').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertPaymentSales',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-payment').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify_amaran(data.bgcolor,data.color,data.message);
+            $('#btn-payment').html('Save <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function view_payment_detail(sales_id) {
+    var modal = $('#payment-details-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetPaymentInfoById', 
+        data: { payment_info_id : sales_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal('show');
+            modal.find($('#sales_date')).html(data.sales_date);
+            modal.find($('#sales_po')).html(data.sales_po);
+            modal.find($('#sales_so')).html(data.sales_so);
+            modal.find($('#sales_dr')).html(data.sales_dr);
+            modal.find($('#sales_si')).html(data.sales_si);
+            modal.find($('#sales_particulars')).html(data.sales_particulars);
+            modal.find($('#sales_media')).html(data.sales_media);
+            //modal.find($('#payment_date')).html(data.payment_date);
+        }
+    });
 }
 
 function notify(type,message) {
@@ -657,6 +705,13 @@ function toastr_option() {
     toastr.options = {
         "newestOnTop": true, "progressBar": false, "positionClass": "toast-top-right", "preventDuplicates": true, "showDuration": 300, "hideDuration": 1000, "timeOut": 3000, "extendedTimeOut": 1000, "showEasing": "swing", "hideEasing": "linear", "showMethod": "fadeIn", "hideMethod": "fadeOut", onHidden: function(){ location.reload(); }
     }
+}
+
+function notify_amaran(bgcolor,color,message) {
+    $.amaran({
+        'theme'     : 'colorful', 'content'   : { bgcolor: bgcolor,color: color,message: message },
+        'position'  : 'top right', 'outEffect' : 'slideBottom'
+    });
 }
 
 function getAbsolutePath() {

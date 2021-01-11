@@ -51,11 +51,12 @@
 								<span>Dashboard</span>
 							</a>
 						</li>
-						<li class="nav-item">
-							<a href="<?=URL?>admin/sales" class="nav-link <?=$data['title'] == 'Sales' ? 'active': '';?>">
-								<i class="icon-cash"></i>
-								<span>Sales</span>
-							</a>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-cash"></i> <span>Sales</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Sales">
+								<li class="nav-item"><a href="<?=URL?>admin/sales" class="nav-link <?=$data['title'] == 'Sales' ? 'active': '';?>">Transactions</a></li>
+								<li class="nav-item"><a href="<?=URL?>admin/payments" class="nav-link <?=$data['title'] == 'Payments' ? 'active': '';?>">Payments</a></li>
+							</ul>
 						</li>
 						<li class="nav-item nav-item-submenu">
 							<a href="#" class="nav-link"><i class="icon-chart"></i> <span>Expenses</span></a>

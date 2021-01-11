@@ -156,7 +156,7 @@ function implement_sales_datatable() {
         scrollY: '450px',
         scrollCollapse: true,
         fixedColumns: {
-            leftColumns: 5,
+            leftColumns: 4,
             rightColumns: 3
         },
         dom: '<"datatable-header"fl><"datatable-scroll datatable-scroll-wrap"t><"datatable-footer"ip>',
@@ -165,6 +165,19 @@ function implement_sales_datatable() {
             searchPlaceholder: 'Type to filter...',
             lengthMenu: '<span>Show:</span> _MENU_',
             paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+        }
+    });
+}
+
+function implement_payment_datatable() {
+    $('#show-payment-table').DataTable({
+        autoWidth: false,
+        responsive: true,
+        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Search</span> _INPUT_',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
         }
     });
 }

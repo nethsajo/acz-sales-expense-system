@@ -522,15 +522,16 @@
             $sales_vat			= $data['sales_vat'];
             $sales_discount	    = $data['sales_discount'];
             $sales_net_amount	= $data['sales_net_amount'];
+            $sales_balance      = $sales_net_amount;
 
             if(empty($sales_id)) {
-                $query = $this->db->query("INSERT INTO tbl_sales (sales_po, sales_so, sales_dr, sales_si, sales_company, sales_cp, sales_particulars, sales_media, sales_width, sales_height, sales_unit, sales_total_area, sales_price_unit, sales_qty, sales_total, sales_vat, sales_discount, sales_net_amount) 
-                VALUES ('$sales_po', '$sales_so', '$sales_dr', '$sales_si', '$sales_company', '$sales_cp', '$sales_particulars', '$sales_media', $sales_width, $sales_height, '$sales_unit', $sales_total_area, $sales_price_unit, $sales_qty, $sales_total, $sales_vat, $sales_discount, $sales_net_amount)");
+                $query = $this->db->query("INSERT INTO tbl_sales_details (sales_po, sales_so, sales_dr, sales_si, sales_company, sales_cp, sales_particulars, sales_media, sales_width, sales_height, sales_unit, sales_total_area, sales_price_unit, sales_qty, sales_total, sales_vat, sales_discount, sales_net_amount, sales_balance) 
+                VALUES ('$sales_po', '$sales_so', '$sales_dr', '$sales_si', '$sales_company', '$sales_cp', '$sales_particulars', '$sales_media', $sales_width, $sales_height, '$sales_unit', $sales_total_area, $sales_price_unit, $sales_qty, $sales_total, $sales_vat, $sales_discount, $sales_net_amount, $sales_net_amount)");
                 $message = 'Sale has been added!';
                 $query ? notify('success', $message, true) : null;
             } else {
                 $message = 'Successfully updated!';
-                $query = $this->db->query("UPDATE tbl_sales SET sales_po = '$sales_po', sales_so = '$sales_so', sales_dr = '$sales_dr', sales_si = '$sales_si', sales_company = '$sales_company', sales_cp = '$sales_cp', sales_particulars = '$sales_particulars', sales_media = '$sales_media',
+                $query = $this->db->query("UPDATE tbl_sales_details SET sales_po = '$sales_po', sales_so = '$sales_so', sales_dr = '$sales_dr', sales_si = '$sales_si', sales_company = '$sales_company', sales_cp = '$sales_cp', sales_particulars = '$sales_particulars', sales_media = '$sales_media',
                 sales_width = $sales_width, sales_height = $sales_height, sales_unit = '$sales_unit', sales_total_area = $sales_total_area, sales_price_unit = $sales_price_unit, sales_qty = $sales_qty, sales_total = $sales_total, sales_vat = $sales_vat, sales_discount = $sales_discount, 
                 sales_net_amount = $sales_net_amount WHERE sales_id = $sales_id");
                 $query ? notify('success', $message, true) : null;
@@ -538,12 +539,56 @@
         }
 
         public function get_all_sales_transactions() {
-            $query = $this->db->query("SELECT * FROM tbl_sales");
+            $query = $this->db->query("SELECT * FROM tbl_sales_details WHERE sales_balance > 0");
             return $query;
         }
 
         public function get_sales_by_id($sales_id) {
-            $query = $this->db->query("SELECT * FROM tbl_sales WHERE sales_id = $sales_id");
+            $query = $this->db->query("SELECT * FROM tbl_sales_details WHERE sales_id = $sales_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function get_payment_details_by_id($payment_sales_id) {
+            $query = $this->db->query("SELECT sales_net_amount, sales_balance FROM tbl_sales_details WHERE sales_id = $payment_sales_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function sales_payment($data) {
+            $payment_amount     = $data['payment_amount'];
+            $payment_date       = $data['payment_date'];
+            $payment_remark     = $data['payment_remark'];
+            $payment_balance    = $data['payment_balance'];
+            $payment_sales_id   = $data['payment_sales_id'];
+
+            $query = $this->db->query("SELECT sales_net_amount, sales_balance FROM tbl_sales_details WHERE sales_id = $payment_sales_id");
+            $row = $query->fetch_object();
+            $total_amount = $row->sales_net_amount;
+            $balance = $row->sales_balance;
+
+            if($balance > 0) {
+                $query = $this->db->query("INSERT INTO tbl_sales_payments (payment_amount, payment_date, sales_id, payment_remarks) 
+                VALUES($payment_amount, '$payment_date', $payment_sales_id, '$payment_remark')");
+                if($query) {
+                    $query = $this->db->query("SELECT SUM(payment_amount) as  total_payments FROM tbl_sales_payments WHERE sales_id = $payment_sales_id"); 
+                    $row = $query->fetch_object();
+                    $total_payments = $row->total_payments;
+                    $total_balance = $total_amount - $total_payments;
+
+                    $query = $this->db->query("UPDATE tbl_sales_details SET sales_balance = $total_balance WHERE sales_id = $payment_sales_id");
+                    $message = 'Payment has been added successfully!';
+                    $query ? notify('success', $message, true) : null;
+                }
+            }
+        }
+
+        public function get_all_payment_details() {
+            $query = $this->db->query("SELECT sales_id, sales_date, sales_particulars, sales_media, sales_net_amount, sales_balance FROM tbl_sales_details");
+            return $query;
+        }
+
+        public function get_payment_info_by_id($payment_info_id) {
+            $query = $this->db->query("SELECT * FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsp.sales_id = tsd.sales_id WHERE tsd.sales_id = $payment_info_id");
+            
             echo json_encode($query->fetch_object());
         }
 

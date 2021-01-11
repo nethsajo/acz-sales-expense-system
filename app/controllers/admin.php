@@ -50,6 +50,19 @@
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
+
+		public function payments() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Payments';
+			$data['payments'] = $this->model('account')->get_all_payment_details();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/payments',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
 		
 		public function banks() {
 			$data['token']	= $_SESSION['token'];
@@ -579,6 +592,29 @@
 		public function GetSalesById() {
 			$sales_id = $this->input->post('sales_id');
 			$this->model('account')->get_sales_by_id($sales_id);
+		}
+
+		public function GetPaymentDetailsById() {
+			$payment_sales_id = $this->input->post('payment_sales_id');
+			$this->model('account')->get_payment_details_by_id($payment_sales_id);
+		}
+
+		public function GetPaymentInfoById() {
+			$payment_info_id = $this->input->post('payment_info_id');
+			$this->model('account')->get_payment_info_by_id($payment_info_id);
+		}
+
+		public function InsertPaymentSales() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'payment_amount' 	=> $this->input->post('payment_amount'),
+					'payment_date'		=> $this->input->post('payment_date'),
+					'payment_remark'	=> $this->input->post('payment_remark'),
+					'payment_balance'	=> $this->input->post('payment_balance'),
+					'payment_sales_id'	=> $this->input->post('payment_sales_id')
+				);
+				$this->model('account')->sales_payment($data);
+			}
 		}
 		
 		public function logout() {
