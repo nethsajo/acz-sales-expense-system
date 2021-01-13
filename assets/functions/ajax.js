@@ -643,6 +643,30 @@ function view_sales(sales_id) {
     });
 }
 
+function delete_sales(sales_id) {
+    var modal = $('#sales-delete-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete--sales")).val(sales_id);
+}
+
+function DeleteSalesById(sales_id) {
+    var modal = $('#sales-delete-modal');
+    var data = { sales_delete_id : sales_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeleteSalesById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete--sales').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            notify(data.type,data.message);
+            modal.modal('hide');
+        }
+    });
+}
+
 function view_payment(payment_sales_id) {
     var modal = $('#payment-sales-modal');
     $.ajax({
@@ -684,18 +708,34 @@ function view_payment_detail(sales_id) {
         data: { payment_info_id : sales_id }, 
         dataType: 'json',
         success: function (data) {
+            var total_amount = 0;
+
             modal.modal('show');
-            modal.find($('#sales_date')).html(data.sales_date);
-            modal.find($('#sales_po')).html(data.sales_po);
-            modal.find($('#sales_so')).html(data.sales_so);
-            modal.find($('#sales_dr')).html(data.sales_dr);
-            modal.find($('#sales_si')).html(data.sales_si);
-            modal.find($('#sales_particulars')).html(data.sales_particulars);
-            modal.find($('#sales_media')).html(data.sales_media);
-            //modal.find($('#payment_date')).html(data.payment_date);
+            modal.find($('#sales_date')).html(data.sales[0].sales_date);
+            modal.find($('#sales_po')).html(data.sales[0].sales_po);
+            modal.find($('#sales_so')).html(data.sales[0].sales_so);
+            modal.find($('#sales_dr')).html(data.sales[0].sales_dr);
+            modal.find($('#sales_si')).html(data.sales[0].sales_si);
+            modal.find($('#sales_particulars')).html(data.sales[0].sales_particulars);
+            modal.find($('#sales_media')).html(data.sales[0].sales_media);
+            
+            $.each(data.payments, function (i, payment) {
+                var x = $('#tbbody tbody tr:first').clone().appendTo('#tbbody tbody');
+                x.find('td').eq(0).text(data.payments[i].payment_date);
+                x.find('td').eq(1).text(data.payments[i].payment_amount);
+                x.find('td').eq(2).text(data.payments[i].payment_remarks);
+
+                total_amount += parseFloat(data.payments[i].payment_amount);
+            });
+
+            modal.find($('#sales_net_amount')).html('&#8369; ' + data.sales[0].sales_net_amount);
+            modal.find($('#total_paid')).html('&#8369; ' + total_amount);
+            modal.find($('#total_balance')).html('&#8369; ' + data.sales[0].sales_balance);
         }
     });
 }
+
+
 
 function notify(type,message) {
     Command: toastr[type](message)

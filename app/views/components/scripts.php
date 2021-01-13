@@ -41,7 +41,8 @@
         <script type="text/javascript">
             var app = angular.module('app', ['ngMessages']);
             app.controller('mainController',function($scope){
-                
+                $scope.payment = {};
+                $scope.payment.payment_amount = '';
             });
 
             toastr_option();
@@ -93,12 +94,6 @@
 
         <script type="text/javascript">
             $(document).ready(function(){
-                $('#from').datepicker({ dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true });
-                $('#to').datepicker({ dateFormat: 'yy-mm-dd', changeMonth: true, changeYear: true });
-
-                $("#from").datepicker().datepicker("setDate", new Date());
-                $("#to").datepicker().datepicker("setDate", new Date());
-
                 implement_employee_datatable();
                 implement_bank_datatable();
                 implement_expense_category_datatable();
@@ -108,6 +103,7 @@
                 implement_cm_datatable();
                 implement_emr_datatable();
                 implement_sales_datatable();
+                implement_employee_sales_datatable();
                 implement_payment_datatable();
             });
         </script>

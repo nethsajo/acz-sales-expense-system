@@ -173,64 +173,68 @@
 		}
 
 		public function reports() {
-			$from 	= $_POST['from'];
-			$to		= $_POST['to'];
+			if(isset($_POST['from']) && ($_POST['to'])) {
+				$from 	= $_POST['from'];
+				$to		= $_POST['to'];
 
-			$range = array('from' => $from, 'to' => $to);
-			$check_monitoring = $this->model('account')->get_monitoring($range);
+				$range = array('from' => $from, 'to' => $to);
+				$check_monitoring = $this->model('account')->get_monitoring($range);
+				
+				$from_date = date('F d, Y',strtotime($from));
+				$to_date  = date('F d, Y',strtotime($to));
 			
-			$from_date = date('F d, Y',strtotime($from));
-        	$to_date  = date('F d, Y',strtotime($to));
-        
-			$pdf = new TCPDF('P','mm','Legal');
-			$pdf->SetPrintHeader(false);
-			$pdf->SetPrintFooter(false);
-			$pdf->AddPage();
-			ob_start();
-			$pdf->SetFont('helvetica','B',10);
-			$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
-			$pdf->SetFont('helvetica','B',13);
-			$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
-			$pdf->SetFont('helvetica','',10);
-			$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
-			$pdf->SetFont('helvetica','B',10);
-			$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
-			$pdf->cell(190,5,'',0,1,'C');
-			$pdf->cell(190,5,'',0,1,'C');
-			$pdf->SetFont('helvetica','B',15);
-			$pdf->cell(190,5,'CHECK MONITORING',0,1,'C');
-			$pdf->SetFont('helvetica','',10);
-			$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
-			$pdf->cell(190,5,'',0,1,'C');
-			$pdf->SetFont('helvetica','B',10);
-			
-			$tbl .= '
-				<table style="border:1px solid #000">
-					<tr>
-						<th style="border:1px solid #000">CHECK DATE</th>
-						<th style="border:1px solid #000">CHECK NUMBER</th>
-						<th style="border:1px solid #000">VENDOR</th>
-						<th style="border:1px solid #000">SUM OF TOTAL</th>
-					</tr>';
-				foreach($check_monitoring as $row) {
-					$sum_total += $row['sum_total'];
-					$tbl .= '
-					<tr>
-						<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
-						<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
-						<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
-						<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
-					</tr>';
-				}
-			
-			$tbl .= '</table>'; 
-			ob_end_clean();
-			$pdf->writeHTML($tbl, true, false, false, false, '');
+				$pdf = new TCPDF('P','mm','Legal');
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+				$pdf->AddPage();
+				ob_start();
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+				$pdf->SetFont('helvetica','B',13);
+				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190,5,'CHECK MONITORING',0,1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				
+				$tbl .= '
+					<table style="border:1px solid #000">
+						<tr>
+							<th style="border:1px solid #000">CHECK DATE</th>
+							<th style="border:1px solid #000">CHECK NUMBER</th>
+							<th style="border:1px solid #000">VENDOR</th>
+							<th style="border:1px solid #000">SUM OF TOTAL</th>
+						</tr>';
+					foreach($check_monitoring as $row) {
+						$sum_total += $row['sum_total'];
+						$tbl .= '
+						<tr>
+							<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
+							<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
+						</tr>';
+					}
+				
+				$tbl .= '</table>'; 
+				ob_end_clean();
+				$pdf->writeHTML($tbl, true, false, false, false, '');
 
-			$pdf->SetFont('helvetica','B',10);
-			$pdf->cell(165, 8, 'Total Expenses', 1, 0);
-			$pdf->cell(25, 8, number_format($sum_total, 2), 1, 1,'C');
-			$pdf->Output('Check-Monitoring-'.$from_date.'-'.$to_date.'.pdf', 'I'); 
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(165, 8, 'Total Expenses', 1, 0);
+				$pdf->cell(25, 8, number_format($sum_total, 2), 1, 1,'C');
+				$pdf->Output('Check-Monitoring-'.$from_date.'-'.$to_date.'.pdf', 'I'); 
+			} else {
+				redirect('admin/monitoring');
+			} 
 		}
 
 		public function filter_expense_report() {
@@ -614,6 +618,13 @@
 					'payment_sales_id'	=> $this->input->post('payment_sales_id')
 				);
 				$this->model('account')->sales_payment($data);
+			}
+		}
+
+		public function DeleteSalesById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$sales_delete_id = $this->input->post('sales_delete_id');
+				$this->model('account')->delete_sales_by_id($sales_delete_id);
 			}
 		}
 		

@@ -61,9 +61,6 @@
 						<li class="nav-item nav-item-submenu">
 							<a href="#" class="nav-link"><i class="icon-chart"></i> <span>Expenses</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Expenses">
-								<li class="nav-item"><a href="<?=URL?>admin/banks" class="nav-link <?= $data['title'] == 'Banks' ? 'active' : '';?>">Banks</a></li>
-								<li class="nav-item"><a href="<?=URL?>admin/category" class="nav-link <?= $data['title'] == 'Category' ? 'active' : '';?>">Category</a></li>
-								<li class="nav-item"><a href="<?=URL?>admin/payee" class="nav-link <?= $data['title'] == 'Payee' ? 'active' : '';?>">Payee</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/transactions" class="nav-link <?= $data['title'] == 'Transactions' ? 'active' : '';?>">Transactions</a></li>
 								<li class="nav-item nav-item-submenu">
 									<a href="#" class="nav-link">Reports</a>
@@ -84,6 +81,9 @@
 						<li class="nav-item nav-item-submenu">
 							<a href="#" class="nav-link"><i class="icon-cog"></i> <span>Control Panel</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Control Panel">
+								<li class="nav-item"><a href="<?=URL?>admin/banks" class="nav-link <?= $data['title'] == 'Banks' ? 'active' : '';?>">Banks</a></li>
+								<li class="nav-item"><a href="<?=URL?>admin/category" class="nav-link <?= $data['title'] == 'Category' ? 'active' : '';?>">Category</a></li>
+								<li class="nav-item"><a href="<?=URL?>admin/payee" class="nav-link <?= $data['title'] == 'Payee' ? 'active' : '';?>">Payee</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/exportdb" class="nav-link <?= $data['title'] == 'Export Database' ? 'active' : '';?>">Export Database</a></li>
 							</ul>
 						</li>

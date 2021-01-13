@@ -169,6 +169,27 @@ function implement_sales_datatable() {
     });
 }
 
+function implement_employee_sales_datatable() {
+    $('#show-employee-sales-table').DataTable({
+        autoWidth: false,
+        ordering: false,
+        scrollX: true,
+        scrollY: '450px',
+        scrollCollapse: true,
+        fixedColumns: {
+            leftColumns: 4,
+            rightColumns: 2
+        },
+        dom: '<"datatable-header"fl><"datatable-scroll datatable-scroll-wrap"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Filter:</span> _INPUT_',
+            searchPlaceholder: 'Type to filter...',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+        }
+    });
+}
+
 function implement_payment_datatable() {
     $('#show-payment-table').DataTable({
         autoWidth: false,

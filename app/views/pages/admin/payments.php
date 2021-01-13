@@ -51,7 +51,7 @@
         </div>
 
         <div id="payment-details-modal" class="modal fade" tabindex="-1">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-md">
                 <div class="modal-content">
                     <div class="modal-header bg-green-600">
                         <h5 class="modal-title" id="modal-title"><i class="icon-cash3 mr-2"></i> &nbsp;PAYMENT DETAILS</h5>
@@ -60,7 +60,7 @@
                     
                     <div class="modal-body">
                         <input type="hidden" id="payment_info_id" name="payment_info_id" class="form-control">
-                        <h6 class="font-weight-semibold">Sales Details</h6>
+                        <h6 class="font-weight-semibold">Sales Invoice</h6>
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <tr>
@@ -80,7 +80,8 @@
                                     <td id="sales_si"></td>
                                 </tr>
                             </table>
-                            <hr>
+                            
+                            <h6 class="font-weight-semibold mt-3">Sales Details</h6>
                             <table class="table table-bordered">
                                 <tr>
                                     <th>Particulars</th>
@@ -90,39 +91,42 @@
                                 </tr>
                             </table>
                         </div>
-                        <hr>
-                        <h6 class="font-weight-semibold">Payment Details</h6>
+                        <h6 class="font-weight-semibold mt-3">Payment Details</h6>
                         <div class="table-responsive">
-                            <table class="table table-bordered">
+                            <table class="table table-bordered" id="tbbody">
                                 <thead>
                                     <tr>
                                         <th>Date</th>
                                         <th>Amount Paid</th>
                                         <th>Remarks</th>
                                     </tr>
-                                    <tr>
-                                        <td id="payment_date"></td>
-                                        <td id="payment_amount"></td>
-                                        <td id="payment_remarks"></td>
-                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
                                 </thead>
                             </table>
                         </div>
                         <hr>
-                        <table>
-                            <tr>
-                                <th>Total Fees: </th>
-                                <td id="sales_net_amount"></td>
-                            </tr>
-                            <tr>
-                                <th>Total Paid: </th>
-                                <td id="total_paid"></td>
-                            </tr>
-                            <tr>
-                                <th>Balance: </th>
-                                <td id="total_balance"></td>
-                            </tr>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tr>
+                                    <th>Total Fees: </th>
+                                    <td id="sales_net_amount"></td>
+                                </tr>
+                                <tr>
+                                    <th>Total Paid: </th>
+                                    <td id="total_paid"></td>
+                                </tr>
+                                <tr>
+                                    <th>Balance: </th>
+                                    <td id="total_balance"></td>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
                     <div class="modal-footer">
 						<button type="button" class="btn bg-green-600" data-dismiss="modal">Close</button>

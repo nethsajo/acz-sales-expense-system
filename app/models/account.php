@@ -538,6 +538,12 @@
             }
         }
 
+        public function delete_sales_by_id($sales_delete_id) {
+            $query = $this->db->query("DELETE tsd.*, tsp.* FROM tbl_sales_details tsd LEFT JOIN tbl_sales_payments tsp ON tsd.sales_id = tsp.sales_id WHERE tsd.sales_id = $sales_delete_id");
+            $message = "Expense has been deleted.";
+            $query ? notify('info', $message, true) : null;
+        }
+
         public function get_all_sales_transactions() {
             $query = $this->db->query("SELECT * FROM tbl_sales_details WHERE sales_balance > 0");
             return $query;
@@ -588,8 +594,40 @@
 
         public function get_payment_info_by_id($payment_info_id) {
             $query = $this->db->query("SELECT * FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsp.sales_id = tsd.sales_id WHERE tsd.sales_id = $payment_info_id");
-            
-            echo json_encode($query->fetch_object());
+            $last_salesid = NULL;
+            $t = [];
+
+            while($row = $query->fetch_assoc()) {
+                if ( $last_salesid != $row['sales_id'] ) {  
+                    // get sales_details columns in this case     
+                    $t['sales'][] = [
+                        "sales_id"          => $row['sales_id'],
+                        "sales_date"        => $row['sales_date'],
+                        "sales_po"          => $row['sales_po'],
+                        "sales_so"          => $row['sales_so'],
+                        "sales_dr"          => $row['sales_dr'],
+                        "sales_si"          => $row['sales_si'],
+                        "sales_particulars" => $row['sales_particulars'],
+                        "sales_media"       => $row['sales_media'],
+                        "sales_net_amount"  => $row['sales_net_amount'],
+                        "sales_balance"     => $row['sales_balance']
+                        
+                    ];
+                    $last_salesid = $row['sales_id'];
+                }
+
+                if (isset($row['payment_id'])) {
+                    // then get the sales_payment info
+                    $t['payments'][] = [
+                        'payment_id' => $row['payment_id'],
+                        'payment_amount' => $row['payment_amount'],
+                        'payment_date' => $row['payment_date'],
+                        'payment_remarks' => $row['payment_remarks']
+                    ];
+                }
+            }    
+
+            echo json_encode($t, JSON_PRETTY_PRINT);
         }
 
         public function post($data) {

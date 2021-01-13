@@ -34,7 +34,7 @@
 									<span class="input-group-prepend">
 										<span class="input-group-text"><i class="icon-calendar22"></i></span>
 									</span>
-									<input type="text" class="form-control" name="from" id="from">
+									<input type="date" class="form-control" name="from" id="from">
 								</div>
 							</div>
 						</div>
@@ -45,7 +45,7 @@
 									<span class="input-group-prepend">
 										<span class="input-group-text"><i class="icon-calendar22"></i></span>
 									</span>
-									<input type="text" class="form-control" name="to" id="to">
+									<input type="date" class="form-control" name="to" id="to">
 								</div>
 							</div>
 						</div>

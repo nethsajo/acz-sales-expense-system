@@ -24,12 +24,12 @@
 	<div class="content">
 		<button id="button_sales" onclick="sales_modal()" class="btn bg-green mb-3"><i class="icon-cash mr-2"></i><b> ADD SALES</b></button>
 		<div class="card">
-			<table class="table datatable-fixed-both" id="show-sales-table">
+			<table class="table datatable-fixed-both" id="show-employee-sales-table">
 				<thead>
 					<tr>
 						<th colspan="4"></th>
 						<th colspan="16">SALES DETAILS</th>
-						<th colspan="3" class="text-center">ACTIONS</th>
+						<th colspan="2" class="text-center">ACTIONS</th>
 					</tr>
 					<tr>
 						<th>PO #</th>
@@ -52,7 +52,6 @@
 						<th>Discount</th>
 						<th>Net Amount Due</th>
 						<th>Balance</th>
-						<th></th>
 						<th></th>
 						<th></th>
 					</tr>
@@ -86,8 +85,7 @@
 							<td><?=number_format($row['sales_net_amount'], 2);?></td>
 							<td><?=number_format($row['sales_balance'], 2);?></td>
 							<td style="text-align:center"><a onclick="view_sales('<?=$row['sales_id']?>')" style="cursor:pointer" alt="Edit"><i class="icon-pencil text-info-800"></i></a></td>
-							<td style="text-align:center"><a onclick="view_payment('<?=$row['sales_id']?>')" style="cursor:pointer" alt="Remarks"><i class="icon-cash text-teal-800"></i></a></td>
-							<td style="text-align:center"><a onclick="delete_sales('<?=$row['sales_id']?>')" style="cursor:pointer" alt="Remove"><i class="icon-trash text-warning-800"></i></a></td>
+							<td style="text-align:center"><a onclick="view_payment('<?=$row['sales_id']?>')" style="cursor:pointer" alt="Payment"><i class="icon-cash text-teal-800"></i></a></td>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
@@ -280,13 +278,13 @@
 						</div>
 						<div class="form-group">
 							<label for="">Balance <small>*</small></label>
-							<input type="text" id="payment_balance" name="payment_balance" placeholder="Balance" class="form-control" ng-model="payment.payment_balance" readonly>
+							<input type="text" id="payment_balance" name="payment_balance" placeholder="Balance" class="form-control" ng-model="payment_balance" readonly>
 						</div>
 						<div class="form-group">
 							<div class="row">
 								<div class="col-sm-6">
 									<label for="">Amount <small>*</small></label>
-									<input type="text" id="payment_amount" name="payment_amount" placeholder="Amount" class="form-control" ng-model="payment.payment_amount" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-max="payment.payment_balance">
+									<input type="text" id="payment_amount" name="payment_amount" placeholder="Amount" class="form-control" ng-model="payment_amount" ng-pattern="/^[0-9]+\.?[0-9]*$/" ng-max="payment_balance">
 									<span ng-messages="formPayment.payment_amount.$error" ng-if="formPayment.payment_amount.$dirty">
 										<strong ng-message="pattern" class="text-danger">Please type numbers only.</strong>
 										<strong ng-message="max" class="text-danger">This field should not be larger than the balance</strong>
@@ -309,28 +307,6 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 						<button type="submit" onclick="InsertPaymentSales()" ng-disabled="formPayment.$invalid" id="btn-payment" class="btn bg-green">Save <i class="icon-arrow-right14 position-right"></i></button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-	<div id="sales-delete-modal" class="modal fade" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered modal-sm">
-			<div class="modal-content">
-				<div class="modal-header bg-green-600">
-					<h5 class="modal-title" id="modal-title"><i class="icon-trash mr-2"></i> &nbsp; DELETE TRANSACTION?</h5>
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-				</div>
-				<form name="formDeleteSales" id="formDeleteSales" method="POST" novalidate>
-					<div class="modal-body">
-						<input type="hidden" id="token" name="token" value="<?=$data['token']?>'" class="form-control">
-						<input type="hidden" id="sales_delete_id" name="sales_delete_id" class="form-control"/>
-						<p class="text-center">Are you sure do you want to delete this transaction?</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-						<button type="submit" id="btn-delete--sales" class="btn bg-green" onclick="DeleteSalesById(this.value)">Confirm <i class="icon-check2 position-right"></i></button>
 					</div>
 				</form>
 			</div>
