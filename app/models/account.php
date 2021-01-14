@@ -21,6 +21,25 @@
             echo json_encode($jsonArray);
         }
 
+        public function chart_collected_uncollected() {
+            $result = $this->db->query("SELECT SUM(tsd.sales_balance) AS uncollected, SUM(tsp.payment_amount) AS collected FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id");
+            header('Content-type: application/json');
+            echo json_encode($result->fetch_object());
+        }
+
+        public function chart_sales_per_media() {
+            $result = $this->db->query("SELECT SUM(tsp.payment_amount) AS sum_total, tsd.sales_media FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id GROUP BY tsd.sales_media");
+            $jsonArray = array();
+            foreach($result as $row) {
+                $jsonArrayItem = array();
+                $jsonArrayItem['label'] = $row['sales_media'];
+                $jsonArrayItem['value'] = $row['sum_total'];
+                array_push($jsonArray, $jsonArrayItem);
+            }    
+            header('Content-type: application/json');
+            echo json_encode($jsonArray);
+        }
+
         public function total_employees($role) {
             $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_role_id = $role");
             return $query->num_rows;
@@ -399,6 +418,44 @@
             $query ? notify('info', $message, true) : null;
         }
 
+        //Media
+        public function media($data) {
+            $media_id   = $data['media_id'];
+            $media_name = $data['media_name'];
+
+            if(empty($media_id)) {
+                $check = $this->db->query("SELECT * FROM tbl_media WHERE media_name = '$media_name'");
+                if($check->num_rows > 0) {
+                    $message = 'Media is already exist.';
+                    notify('error', $message, false);
+                } else {
+                    $message = $media_name.' has been added!';
+                    $query = $this->db->query("INSERT INTO tbl_media (media_name) VALUES('$media_name')");
+                    $query ? notify('success', $message, true) : null;
+                }
+            } else {
+                $message = 'Media has been updated.';
+                $query = $this->db->query("UPDATE tbl_media SET media_name = '$media_name' WHERE media_id = $media_id");
+                $query ? notify('success', $message, true) : null;
+            }
+        }
+        
+        public function get_media_by_id($media_id) {
+            $query = $this->db->query("SELECT * FROM tbl_media WHERE media_id = $media_id");
+            echo json_encode($query->fetch_object());
+        }
+
+        public function get_all_media() {
+            $query = $this->db->query("SELECT * FROM tbl_media");
+            return $query;
+        }
+
+        public function delete_media_by_id($media_delete_id) {
+            $query = $this->db->query("DELETE FROM tbl_media WHERE media_id = $media_delete_id");
+            $message = "Media has been deleted.";
+            $query ? notify('info', $message, true) : null;
+        }
+
         //Expense Transaction
         public function expense_transactions($data) {
             $expense_id             = $data['expense_id']; 
@@ -593,12 +650,12 @@
         }
 
         public function get_payment_info_by_id($payment_info_id) {
-            $query = $this->db->query("SELECT * FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsp.sales_id = tsd.sales_id WHERE tsd.sales_id = $payment_info_id");
+            $query = $this->db->query("SELECT * FROM tbl_sales_details AS tsd LEFT JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id WHERE tsd.sales_id = $payment_info_id");
             $last_salesid = NULL;
             $t = [];
 
             while($row = $query->fetch_assoc()) {
-                if ( $last_salesid != $row['sales_id'] ) {  
+                if ($last_salesid != $row['sales_id']) {  
                     // get sales_details columns in this case     
                     $t['sales'][] = [
                         "sales_id"          => $row['sales_id'],
@@ -611,22 +668,23 @@
                         "sales_media"       => $row['sales_media'],
                         "sales_net_amount"  => $row['sales_net_amount'],
                         "sales_balance"     => $row['sales_balance']
-                        
                     ];
                     $last_salesid = $row['sales_id'];
                 }
 
                 if (isset($row['payment_id'])) {
-                    // then get the sales_payment info
                     $t['payments'][] = [
                         'payment_id' => $row['payment_id'],
                         'payment_amount' => $row['payment_amount'],
                         'payment_date' => $row['payment_date'],
                         'payment_remarks' => $row['payment_remarks']
                     ];
+                } else {
+                    $t['payments'] = [];
                 }
             }    
 
+            header('Content-type: application/json');
             echo json_encode($t, JSON_PRETTY_PRINT);
         }
 

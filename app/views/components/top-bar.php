@@ -2,7 +2,7 @@
 	<div class="navbar-brand">
 		<?php $controller = $data['user']->role_id == 1 ? 'admin' : ($data['user']->role_id == 2 ? 'employee' : null);?>
 		<a href="<?=URL.$controller?>/dashboard" class="d-inline-block">
-			<img src="<?=ASSETS?>images/acz_default.png" alt="ACZ Digital and Printing Services">
+			<img src="<?=ASSETS?>images/acz_logo.png" alt="ACZ Digital and Printing Services">
 		</a>
 	</div>
 	<div class="d-md-none">

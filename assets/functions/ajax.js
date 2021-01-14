@@ -89,16 +89,15 @@ function update_password() {
 
 function graph() {
     $.ajax({
-        url: url + 'chart',
+        url: url + 'ChartExpenseByCategory',
         type: 'GET',
         success: function(data) {
             chartData = data;
             var chartProperties = {
                 "caption": "Expense Category Comparative",
-                "subCaption": "ACZ Digital and Printing Services",
                 "xAxisName": "Category",
                 "yAxisName": "Sum of Total",
-                "rotatevalues": "2",
+                "rotatevalues": "0",
                 "theme": "fint",
                 "drawcrossline": "1"
             };
@@ -106,7 +105,80 @@ function graph() {
             apiChart = new FusionCharts({
                 type: 'column2d',
                 renderAt: 'chart-container',
-                width: '95%',
+                width: '100%',
+                height: '350',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": chartProperties,
+                    "data": chartData
+                }
+            });
+            apiChart.render();
+        }
+    });
+}
+
+function graph_collected_uncollected() {
+    $.ajax({
+        url: url + 'ChartCollectedUncollected',
+        type: 'GET',
+        success: function(data) {
+            var chartData = [
+                {
+                    label: "Collected",
+                    value: data.collected
+                },
+                {
+                    label: "Uncollected",
+                    value: data.uncollected
+                }
+            ];
+
+            var chartProperties = {
+                "caption": "Sales Collected and Uncollected",
+                "xAxisName": "",
+                "yAxisName": "Sum of Total",
+                "rotatevalues": "0",
+                "theme": "ocean",
+                "drawcrossline": "1"
+            };
+
+            apiChart = new FusionCharts({
+                type: 'bar2d',
+                renderAt: 'chart-collected-uncollected',
+                width: '100%',
+                height: '350',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": chartProperties,
+                    "data": chartData
+                }
+            });
+            apiChart.render();
+        }
+    });
+}
+
+function graph_media() {
+    $.ajax({
+        url: url + 'ChartSalesMedia',
+        type: 'GET',
+        success: function(data) {
+            chartData = data;
+
+            var chartProperties = {
+                "caption": "Sales per Media",
+                "xAxisName": "",
+                "yAxisName": "Sum of Total",
+                "rotatevalues": "0",
+                "theme": "ocean",
+                "drawcrossline": "1"
+            };
+
+            apiChart = new FusionCharts({
+                type: 'pie2d',
+                renderAt: 'chart-sales-media',
+                width: '100%',
                 height: '350',
                 dataFormat: 'json',
                 dataSource: {
@@ -281,7 +353,7 @@ function view_banks(bank_id) {
             modal.modal({ backdrop: 'static', keyboard: false});
             modal.find($('#bank_id')).val(data.bank_id);
             modal.find($('#bank_name')).val(data.bank_name);
-            $('#modal-title').html('<i class="icon-people mr-2"></i>&nbsp; UPDATE BANK NAME');
+            $('#modal-title').html('<i class="icon-office mr-2"></i>&nbsp; UPDATE BANK NAME');
             $('#btn-banks').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
         }
     });
@@ -350,7 +422,7 @@ function view_expense_category(category_id) {
             modal.modal({ backdrop: 'static', keyboard: false});
             modal.find($('#expense_category_id')).val(data.category_id);
             modal.find($('#expense_category_name')).val(data.category_name);
-            $('#modal-title').html('<i class="icon-people mr-2"></i>&nbsp; UPDATE CATEGORY NAME');
+            $('#modal-title').html('<i class="icon-pencil7 mr-2"></i>&nbsp; UPDATE CATEGORY NAME');
             $('#btn-expense--category').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
         }
     });
@@ -441,6 +513,75 @@ function DeletePayeeById(payee_id) {
         dataType : 'json',
         beforeSend:function(){
             $('#btn-delete--payee').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            notify(data.type,data.message);
+            modal.modal('hide');
+        }
+    });
+}
+
+function media_modal() {
+    var modal = $('#media-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    $('#formMedia')[0].reset();
+    
+    modal.find($('#btn-media')).html('Add Media <i class="icon-arrow-right14 position-right"></i>').attr('disabled',true);
+}
+
+function InsertOrUpdateMedia() {
+    var data = $('#formMedia').serialize();
+    var modal = $('#media-modal');
+    $.ajax({
+        type : 'POST',
+        url : url + 'InsertOrUpdateMedia',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-media').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            var content = data.type == 'info' ? 'Save Changes' : 'Add Media';
+            $('#btn-media').html(content +' <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+            modal.modal('hide');
+        }
+    });
+}
+
+function view_media(media_id) {
+    var modal = $('#media-modal');
+    $.ajax({
+        type: 'POST', 
+        url: url + 'GetMediaById', 
+        data: { media_id : media_id }, 
+        dataType: 'json',
+        success: function (data) {
+            modal.modal({ backdrop: 'static', keyboard: false});
+            modal.find($('#media_id')).val(data.media_id);
+            modal.find($('#media_name')).val(data.media_name);
+            $('#modal-title').html('<i class="icon-pencil7 mr-2"></i>&nbsp; UPDATE MEDIA');
+            $('#btn-media').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function delete_media(media_id) {
+    var modal = $('#media-delete-modal');
+    modal.modal({ backdrop: 'static', keyboard: false});
+    modal.find($("#btn-delete--media")).val(media_id);
+}
+
+function DeleteMediaById(media_id) {
+    var modal = $('#media-delete-modal');
+    var data = { media_delete_id : media_id, token : $('#token').val() };
+    $.ajax({
+        type : 'POST',
+        url : url + 'DeleteMediaById',
+        data : data,
+        dataType : 'json',
+        beforeSend:function(){
+            $('#btn-delete--media').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
         },
         success:function(data) {
             notify(data.type,data.message);
@@ -709,7 +850,7 @@ function view_payment_detail(sales_id) {
         dataType: 'json',
         success: function (data) {
             var total_amount = 0;
-
+            
             modal.modal('show');
             modal.find($('#sales_date')).html(data.sales[0].sales_date);
             modal.find($('#sales_po')).html(data.sales[0].sales_po);
@@ -719,18 +860,26 @@ function view_payment_detail(sales_id) {
             modal.find($('#sales_particulars')).html(data.sales[0].sales_particulars);
             modal.find($('#sales_media')).html(data.sales[0].sales_media);
             
-            $.each(data.payments, function (i, payment) {
-                var x = $('#tbbody tbody tr:first').clone().appendTo('#tbbody tbody');
-                x.find('td').eq(0).text(data.payments[i].payment_date);
-                x.find('td').eq(1).text(data.payments[i].payment_amount);
-                x.find('td').eq(2).text(data.payments[i].payment_remarks);
+            $('#tbbody tbody tr:not(:first-child)').remove();
+            var length = (data.payments !== undefined) ? data.payments.length : 0;
+            console.log("---" +length);
+            if(length > 0 ){
+                $.each(data.payments, function (i, payment) {
+                    var x = $('#tbbody tbody tr:first').clone().appendTo('#tbbody tbody');
+                    x.attr('style', '');
+                    x.find('td').eq(0).text(data.payments[i].payment_date);
+                    x.find('td').eq(1).text(data.payments[i].payment_amount);
+                    x.find('td').eq(2).text(data.payments[i].payment_remarks);
 
-                total_amount += parseFloat(data.payments[i].payment_amount);
-            });
+                    total_amount += parseFloat(data.payments[i].payment_amount);
+                });
 
-            modal.find($('#sales_net_amount')).html('&#8369; ' + data.sales[0].sales_net_amount);
-            modal.find($('#total_paid')).html('&#8369; ' + total_amount);
-            modal.find($('#total_balance')).html('&#8369; ' + data.sales[0].sales_balance);
+                modal.find($('#sales_net_amount')).html('&#8369; ' + data.sales[0].sales_net_amount);
+                modal.find($('#total_paid')).html('&#8369; ' + total_amount.toFixed(2));
+                modal.find($('#total_balance')).html('&#8369; ' + data.sales[0].sales_balance);
+            } else {
+                $('#tbbody tbody').append("<tr><td colspan='3' class='text-center'>No result found</td></tr>");
+            }
         }
     });
 }

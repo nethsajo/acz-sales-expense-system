@@ -48,6 +48,8 @@
             toastr_option();
 
             graph();
+            graph_collected_uncollected();
+            graph_media();
         </script>
 
         <script type="text/javascript">
@@ -98,6 +100,7 @@
                 implement_bank_datatable();
                 implement_expense_category_datatable();
                 implement_payee_datatable();
+                implement_media_datatable();
                 implement_logs_datatable();
                 implement_expense_datatable();
                 implement_cm_datatable();

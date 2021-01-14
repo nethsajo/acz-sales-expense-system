@@ -43,7 +43,7 @@
                             <td><?=$row['sales_media'];?></td>
                             <td><?=number_format($row['sales_net_amount'], 2);?></td>
                             <td><?=number_format($row['sales_balance'], 2);?></td>
-                            <td><a onclick="view_payment_detail('<?=$row['sales_id']?>')" style="cursor:pointer"><span class="badge badge-info"> <i class="icon-eye mr-2"></i> View</span></a></td>
+                            <td><a onclick="view_payment_detail('<?=$row['sales_id']?>')" style="cursor:pointer" data-toggle="modal" data-target="#payment-details-modal"><span class="badge badge-info"> <i class="icon-eye mr-2"></i> View</span></a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -101,7 +101,7 @@
                                         <th>Remarks</th>
                                     </tr>
                                     <tbody>
-                                        <tr>
+                                        <tr style="display:none">
                                             <td></td>
                                             <td></td>
                                             <td></td>

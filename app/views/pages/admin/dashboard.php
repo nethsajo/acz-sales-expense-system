@@ -11,7 +11,8 @@
 		<div class="breadcrumb-line breadcrumb-line-light header-elements-md-inline">
 			<div class="d-flex">
 				<div class="breadcrumb">
-					<a href="dashboard.php" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
+					<?php $controller = $data['user']->role_id == 1 ? 'admin' : ($data['user']->role_id == 2 ? 'employee' : null);?>
+					<a href="<?=URL.$controller?>/dashboard" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
 					<span class="breadcrumb-item active">Dashboard</span>
 				</div>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -73,21 +74,25 @@
 			</div>
 
 			<div class="card-body py-0">
-				<div class="row">
-					<div id="chart-container"></div>
-				</div>
+				<div id="chart-container" class="chart position-relative"></div>
+			</div>
+		</div>
+
+		<div class="card">
+			<div class="card-header header-elements-inline">
+				<h6 class="card-title"></h6>
+			</div>
+			<div class="card-body py-0">
+				<div id="chart-sales-media" class="chart position-relative"></div>
 			</div>
 		</div>
 			
 		<div class="card">
 			<div class="card-header header-elements-inline">
-				<h6 class="card-title">Sample Data</h6>
+				<h6 class="card-title"></h6>
 			</div>
-
 			<div class="card-body py-0">
-				<div class="row text-center">
-					
-				</div>
+				<div id="chart-collected-uncollected" class="chart position-relative"></div>
 			</div>
 		</div>
 	</div>

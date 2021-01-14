@@ -164,7 +164,12 @@
 								</div>
 								<div class="col-sm-4">
 									<label for="">Media <small>*</small></label>
-									<input type="text" id="sales_media" name="sales_media" placeholder="Media" class="form-control" ng-model="sales_media" required>
+									<select id="sales_media" name="sales_media" class="form-control" ng-model="sales_media" required>
+										<option value="" disabled selected>Select your option</option>
+										<?php foreach ($data['media'] as $row_media):?>
+											<option value="<?=$row_media['media_name']?>"><?=$row_media['media_name']?></option>
+										<?php endforeach;?>
+									</select>
 									<span ng-messages="formSales.sales_media.$error" ng-if="formSales.sales_media.$dirty">
 										<strong ng-message="required" class="text-danger">This field is required.</strong>
 									</span>

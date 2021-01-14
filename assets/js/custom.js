@@ -29,8 +29,8 @@ function implement_bank_datatable() {
     $('#show-banks-table').DataTable({
         autoWidth: false,
         responsive: true,
+        ordering: false,
         columnDefs: [{ 
-            orderable: false,
             width: '80px',
             targets: [ 0, 2, 3 ]
         }],
@@ -48,8 +48,8 @@ function implement_expense_category_datatable() {
     $('#show-expense-category-table').DataTable({
         autoWidth: false,
         responsive: true,
+        ordering: false,
         columnDefs: [{ 
-            orderable: false,
             width: '80px',
             targets: [ 0, 2, 3 ]
         }],
@@ -67,8 +67,27 @@ function implement_payee_datatable() {
     $('#show-expense-payee-table').DataTable({
         autoWidth: false,
         responsive: true,
+        ordering: false,
         columnDefs: [{ 
-            orderable: false,
+            width: '80px',
+            targets: [ 0, 2, 3 ]
+        }],
+        dom: '<"datatable-header"fl><"datatable-scroll-wrap"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Search:</span> _INPUT_',
+            searchPlaceholder: 'Search...',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': $('html').attr('dir') == 'rtl' ? '&larr;' : '&rarr;', 'previous': $('html').attr('dir') == 'rtl' ? '&rarr;' : '&larr;' }
+        }
+    });
+}
+
+function implement_media_datatable() {
+    $('#show-media-table').DataTable({
+        autoWidth: false,
+        responsive: true,
+        ordering: false,
+        columnDefs: [{ 
             width: '80px',
             targets: [ 0, 2, 3 ]
         }],

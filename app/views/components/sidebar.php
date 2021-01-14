@@ -22,13 +22,13 @@
 				<div class="card-body">
 					<div class="media">
 						<div class="mr-3">
-							<i class="icon-user text-warning-400 border-warning-400 border-3 rounded-round p-2"></i>
+							<i class="icon-user text-slate-300 border-slate-300 border-3 rounded-round p-2"></i>
 						</div>
 
 						<div class="media-body">
 							<div class="media-title font-weight-semibold"><?=$data['user']->employee_firstname .' '.  $data['user']->employee_surname;?></div>
 							<div class="font-size-sm">
-								<?= $data['user']->role_id == 1 ? '<label class="badge badge-danger">Administrator</label>' : ($data['user']->role_id == 2 ? '<label class="badge badge-info">Employee</label>': null);?>
+								<?= $data['user']->role_id == 1 ? '<label class="badge bg-green">Administrator</label>' : ($data['user']->role_id == 2 ? '<label class="badge bg-green">Employee</label>': null);?>
 							</div>
 						</div>
 
@@ -83,8 +83,8 @@
 							<ul class="nav nav-group-sub" data-submenu-title="Control Panel">
 								<li class="nav-item"><a href="<?=URL?>admin/banks" class="nav-link <?= $data['title'] == 'Banks' ? 'active' : '';?>">Banks</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/category" class="nav-link <?= $data['title'] == 'Category' ? 'active' : '';?>">Category</a></li>
+								<li class="nav-item"><a href="<?=URL?>admin/media" class="nav-link <?= $data['title'] == 'Media' ? 'active' : '';?>">Media</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/payee" class="nav-link <?= $data['title'] == 'Payee' ? 'active' : '';?>">Payee</a></li>
-								<li class="nav-item"><a href="<?=URL?>admin/exportdb" class="nav-link <?= $data['title'] == 'Export Database' ? 'active' : '';?>">Export Database</a></li>
 							</ul>
 						</li>
 					<?php } else { ?>

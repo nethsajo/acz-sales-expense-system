@@ -13,7 +13,7 @@
 				<div class="breadcrumb">
 					<?php $controller = $data['user']->role_id == 1 ? 'admin' : ($data['user']->role_id == 2 ? 'employee' : null);?>
 					<a href="<?=URL.$controller?>/dashboard" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
-					<span class="breadcrumb-item">Expense</span>
+					<span class="breadcrumb-item">Control Panel</span>
 					<span class="breadcrumb-item active">Banks</span>
 				</div>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
@@ -51,7 +51,7 @@
 		<div class="modal-dialog modal-dialog-centered modal-sm">
 			<div class="modal-content">
 				<div class="modal-header bg-green-600">
-					<h5 class="modal-title" id="modal-title"><i class="icon-pencil7 mr-2"></i> &nbsp; ADD BANK</h5>
+					<h5 class="modal-title" id="modal-title"><i class="icon-office mr-2"></i> &nbsp; ADD BANK</h5>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<form method="POST" name="formBanks" id="formBanks" novalidate>

@@ -9,8 +9,16 @@
 			$this->input = $this->model('account');
 		}
 
-		public function chart() {
+		public function ChartExpenseByCategory() {
 			$this->model('account')->expense_chart();
+		}
+
+		public function ChartCollectedUncollected() {
+			$this->model('account')->chart_collected_uncollected();
+		}
+
+		public function ChartSalesMedia() {
+			$this->model('account')->chart_sales_per_media();
 		}
 		
 		public function index() {
@@ -42,6 +50,7 @@
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Sales';
 			$data['sales'] = $this->model('account')->get_all_sales_transactions();
+			$data['media'] = $this->model('account')->get_all_media();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -160,14 +169,15 @@
 			$this->view('components/scripts',$data);
 		}
 		
-		public function exportdb() {
+		public function media() {
 			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Export Database';
+			$data['title'] = 'Media';
+			$data['media'] = $this->model('account')->get_all_media();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/export-database',$data);
+			$this->view('pages/admin/media',$data);
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
@@ -517,6 +527,30 @@
 			}
 		}
 
+		//Media
+		public function InsertOrUpdateMedia() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$data = array(
+					'media_id'		=> $this->input->post('media_id'),
+					'media_name'	=> $this->input->post('media_name')
+				);
+				$this->model('account')->media($data);
+			}
+		}
+
+		public function GetMediaById() {
+			$media_id = $this->input->post('media_id');
+			$this->model('account')->get_media_by_id($media_id);
+		}
+
+		public function DeleteMediaById() {
+			if(isset($_SESSION['token']) == $this->input->post('token')) {
+				$media_delete_id = $this->input->post('media_delete_id');
+				$this->model('account')->delete_media_by_id($media_delete_id);
+			}
+		}
+
+		//Expense Transaction
 		public function InsertOrUpdateExpenseTransaction() {
 			if(isset($_SESSION['token']) == $this->input->post('token')) {
 				$data = array(
