@@ -79,8 +79,8 @@
 							</ul>
 						</li>
 						<li class="nav-item nav-item-submenu">
-							<a href="#" class="nav-link"><i class="icon-cog"></i> <span>Control Panel</span></a>
-							<ul class="nav nav-group-sub" data-submenu-title="Control Panel">
+							<a href="#" class="nav-link"><i class="icon-cog"></i> <span>Add / Remove</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Add / Remove">
 								<li class="nav-item"><a href="<?=URL?>admin/banks" class="nav-link <?= $data['title'] == 'Banks' ? 'active' : '';?>">Banks</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/category" class="nav-link <?= $data['title'] == 'Category' ? 'active' : '';?>">Category</a></li>
 								<li class="nav-item"><a href="<?=URL?>admin/media" class="nav-link <?= $data['title'] == 'Media' ? 'active' : '';?>">Media</a></li>

@@ -238,7 +238,7 @@
             $row = $query->fetch_object();
             $number = $row->num_rows;
             
-            $employee_number = 'ACZ'. date("y") . $number;
+            $employee_number = 'ACZ20' . $number;
 
             echo json_encode(['employee_number' => $employee_number]);
         }
