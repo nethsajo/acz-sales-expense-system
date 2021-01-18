@@ -221,3 +221,22 @@ function implement_payment_datatable() {
         }
     });
 }
+
+function implement_soa_datatable() {
+    $('#show-soa-table').DataTable({
+        autoWidth: false,
+        ordering: false,
+        scrollX: true,
+        scrollY: '350px',
+        scrollCollapse: true,
+        fixedColumns: {
+            leftColumns: 4
+        },
+        dom: '<"datatable-header"fl><"datatable-scroll"t><"datatable-footer"ip>',
+        language: {
+            search: '<span>Search</span> _INPUT_',
+            lengthMenu: '<span>Show:</span> _MENU_',
+            paginate: { 'first': 'First', 'last': 'Last', 'next': '→', 'previous': '←' }
+        }
+    });
+}

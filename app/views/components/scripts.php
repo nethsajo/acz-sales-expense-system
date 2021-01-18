@@ -21,6 +21,7 @@
 
         <script src="<?=ASSETS?>js/app.js"></script>
         <script src="<?=ASSETS?>js/custom.js"></script>
+        <script src="<?=ASSETS?>js/not-paid/not-paid.js"></script>
 
         <script src="<?=ASSETS?>graph/fusioncharts.js"></script>
         <script src="<?=ASSETS?>graph/fusioncharts.charts.js"></script>
@@ -108,6 +109,7 @@
                 implement_sales_datatable();
                 implement_employee_sales_datatable();
                 implement_payment_datatable();
+                implement_soa_datatable();
             });
         </script>
     </body>

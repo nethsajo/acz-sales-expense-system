@@ -33,6 +33,33 @@
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
+
+		public function accounts() {
+			$data['token'] 		= $_SESSION['token'];
+			$data['title'] 		= 'Accounts';
+			$data['employees']	= $this->model('account')->get_all_employees(2);
+			$data['user'] 		= $this->model('account')->get_user_information($_SESSION['account_id']);
+			$data['roles']		= $this->model('account')->get_roles();
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/accounts',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+		
+		public function logs() {
+			$data['token'] 	= $_SESSION['token'];
+			$data['title'] 	= 'Logs';
+			$data['logs']	= $this->model('account')->get_logs(1);
+			$data['user']	= $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/logs',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
 		
 		public function profile() {
 			$data['token']	= $_SESSION['token'];
@@ -45,34 +72,7 @@
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
-		
-		public function sales() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Sales';
-			$data['sales'] = $this->model('account')->get_all_sales_transactions();
-			$data['media'] = $this->model('account')->get_all_media();
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
-			$this->view('components/header',$data);
-			$this->view('components/top-bar',$data);
-			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/sales',$data);
-			$this->view('components/footer',$data);
-			$this->view('components/scripts',$data);
-		}
 
-		public function payments() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Payments';
-			$data['payments'] = $this->model('account')->get_all_payment_details();
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
-			$this->view('components/header',$data);
-			$this->view('components/top-bar',$data);
-			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/payments',$data);
-			$this->view('components/footer',$data);
-			$this->view('components/scripts',$data);
-		}
-		
 		public function banks() {
 			$data['token']	= $_SESSION['token'];
 			$data['title']	= 'Banks';
@@ -111,10 +111,133 @@
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
-		
-		public function transactions() {
+
+		public function media() {
 			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Transactions';
+			$data['title'] = 'Media';
+			$data['media'] = $this->model('account')->get_all_media();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/media',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+		
+		public function sales() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Sales';
+			$data['sales'] = $this->model('account')->get_all_sales_transactions();
+			$data['media'] = $this->model('account')->get_all_media();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/sales',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+
+		public function payments() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Payments';
+			$data['payments'] = $this->model('account')->get_all_payment_details();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/payments',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+
+		public function soa() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Statement of Accounts';
+			$data['soa'] = $this->model('account')->get_statement_of_accounts();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/soa',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+
+		public function soa_report() {
+			if(isset($_POST['from_soa']) && ($_POST['to_soa']) && ($_POST['company_soa'])) {
+				$company = $_POST['company_soa'];
+				$from 	= $_POST['from_soa'];
+				$to		= $_POST['to_soa'];
+
+				$search = array('company_soa' => $company, 'from_soa' => $from, 'to_soa' => $to);
+				$soa_report = $this->model('account')->generate_report_soa($search);
+				
+				$from = date('F d, Y',strtotime($from));
+				$to  = date('F d, Y',strtotime($to));
+
+				$pdf = new TCPDF('P','mm','Legal');
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+				$pdf->AddPage();
+				ob_start();
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+				$pdf->SetFont('helvetica','B',13);
+				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190,5,'STATEMENT OF ACCOUNT',0,1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'Date : From '.$from.' to '.$to.'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190, 5, 'Company: '.$company, 0, 1, 'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+
+				$tbl .= '
+					<table style="border:1px solid #000">
+						<tr>
+							<th style="border:1px solid #000">DATE</th>
+							<th style="border:1px solid #000">PARTICULAR</th>
+							<th style="border:1px solid #000">NET AMOUNT</th>
+							<th style="border:1px solid #000">AMOUNT PAID</th>
+							<th style="border:1px solid #000">DATE PAID</th>
+							<th style="border:1px solid #000">BALANCE</th>
+						</tr>';
+					foreach($soa_report as $row) {
+						$date = $row['sales_date'];
+						$sum_balance += $row['sales_balance'];
+						$tbl .= '
+						<tr>
+							<td style="border:1px solid #000">'.$date = date( "Y-m-d", strtotime($date)).'</td>
+							<td style="border:1px solid #000">'.$row['sales_particulars'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sales_net_amount'], 2).'</td>
+							<td style="border:1px solid #000">'.number_format($row['amount_paid'], 2).'</td>
+							<td style="border:1px solid #000">'.$row['payment_date'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sales_balance'], 2).'</td>
+						</tr>';
+					}
+				$tbl .= '</table>'; 
+				ob_end_clean();
+				$pdf->writeHTML($tbl, true, false, false, false, '');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(165, 8, 'Total Balance', 1, 0);
+				$pdf->cell(25, 8, number_format($sum_balance, 2), 1, 1,'C');
+				$pdf->Output('SOA-'.$company.'-'.$from.'-'.$to.'.pdf', 'I'); 
+			}
+		}
+		
+		public function expenses() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Expenses';
 			$data['banks'] = $this->model('account')->get_all_banks();
 			$data['payee'] = $this->model('account')->get_all_payee();
 			$data['units'] = $this->model('account')->get_units();
@@ -124,7 +247,7 @@
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
 			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/transactions',$data);
+			$this->view('pages/admin/expenses',$data);
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
@@ -141,46 +264,6 @@
 			$this->view('components/footer',$data);
 			$this->view('components/scripts',$data);
 		}
-		
-		public function accounts() {
-			$data['token'] 		= $_SESSION['token'];
-			$data['title'] 		= 'Accounts';
-			$data['employees']	= $this->model('account')->get_all_employees(2);
-			$data['user'] 		= $this->model('account')->get_user_information($_SESSION['account_id']);
-			$data['roles']		= $this->model('account')->get_roles();
-			$this->view('components/header',$data);
-			$this->view('components/top-bar',$data);
-			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/accounts',$data);
-			$this->view('components/footer',$data);
-			$this->view('components/scripts',$data);
-		}
-		
-		public function logs() {
-			$data['token'] 	= $_SESSION['token'];
-			$data['title'] 	= 'Logs';
-			$data['logs']	= $this->model('account')->get_logs(1);
-			$data['user']	= $this->model('account')->get_user_information($_SESSION['account_id']);
-			$this->view('components/header',$data);
-			$this->view('components/top-bar',$data);
-			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/logs',$data);
-			$this->view('components/footer',$data);
-			$this->view('components/scripts',$data);
-		}
-		
-		public function media() {
-			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Media';
-			$data['media'] = $this->model('account')->get_all_media();
-			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
-			$this->view('components/header',$data);
-			$this->view('components/top-bar',$data);
-			$this->view('components/sidebar',$data);
-			$this->view('pages/admin/media',$data);
-			$this->view('components/footer',$data);
-			$this->view('components/scripts',$data);
-		}
 
 		public function reports() {
 			if(isset($_POST['from']) && ($_POST['to'])) {
@@ -188,7 +271,7 @@
 				$to		= $_POST['to'];
 
 				$range = array('from' => $from, 'to' => $to);
-				$check_monitoring = $this->model('account')->get_monitoring($range);
+				$check_monitoring = $this->model('account')->generate_report_check_monitoring($range);
 				
 				$from_date = date('F d, Y',strtotime($from));
 				$to_date  = date('F d, Y',strtotime($to));
@@ -250,7 +333,7 @@
 		public function filter_expense_report() {
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Monthly and Yearly Expense Report';
-			$data['report'] = $this->model('account')->get_monthly_expense_report();
+			$data['report'] = $this->model('account')->get_monthly_yearly_expense_report();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -267,7 +350,7 @@
 
 				$range = array('from_month' => $from_month, 'from_year' => $from_year);
 
-				$expense_monthly_report = $this->model('account')->get_expense_monthly_report($range);
+				$expense_monthly_report = $this->model('account')->generate_monthly_yearly_expense_report($range);
 	
 				$month = date("F", mktime(0, 0, 0, $from_month, 10));
 			

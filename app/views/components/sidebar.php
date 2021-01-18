@@ -61,9 +61,20 @@
 						<li class="nav-item nav-item-submenu">
 							<a href="#" class="nav-link"><i class="icon-chart"></i> <span>Expenses</span></a>
 							<ul class="nav nav-group-sub" data-submenu-title="Expenses">
-								<li class="nav-item"><a href="<?=URL?>admin/transactions" class="nav-link <?= $data['title'] == 'Transactions' ? 'active' : '';?>">Transactions</a></li>
+								<li class="nav-item"><a href="<?=URL?>admin/expenses" class="nav-link <?= $data['title'] == 'Expenses' ? 'active' : '';?>">Transactions</a></li>
+							</ul>
+						</li>
+						<li class="nav-item nav-item-submenu">
+							<a href="#" class="nav-link"><i class="icon-printer"></i> <span>Reports</span></a>
+							<ul class="nav nav-group-sub" data-submenu-title="Reports">
 								<li class="nav-item nav-item-submenu">
-									<a href="#" class="nav-link">Reports</a>
+									<a href="#" class="nav-link">Sales</a>
+									<ul class="nav nav-group-sub">
+										<li class="nav-item"><a href="<?=URL?>admin/soa" class="nav-link <?= $data['title'] == 'Statement of Accounts' ? 'active' : '';?>">Statement of Accounts</a></li>
+									</ul>
+								</li>
+								<li class="nav-item nav-item-submenu">
+									<a href="#" class="nav-link">Expenses</a>
 									<ul class="nav nav-group-sub">
 										<li class="nav-item"><a href="<?=URL?>admin/monitoring" class="nav-link <?= $data['title'] == 'Check Monitoring' ? 'active' : '';?>">Check Monitoring</a></li>
 										<li class="nav-item"><a href="<?=URL?>admin/filter_expense_report" class="nav-link <?= $data['title'] == 'Monthly and Yearly Expense Report' ? 'active' : '';?>">Monthly and Yearly Report</a></li>

@@ -531,7 +531,7 @@
             return $query;
         }
 
-        public function get_monitoring($data) {
+        public function generate_report_check_monitoring($data) {
             $from   = $data['from'];
             $to     = $data['to'];
 
@@ -539,12 +539,12 @@
             return $query;
         }
 
-        public function get_monthly_expense_report() {
+        public function get_monthly_yearly_expense_report() {
             $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_vendor, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id GROUP BY ted.expense_check_date ORDER BY ted.expense_check_date ASC");
             return $query;
         }
 
-        public function get_expense_monthly_report($data) {
+        public function generate_monthly_yearly_expense_report($data) {
             $from_month  = $data['from_month'];
             $from_year   = $data['from_year'];
 
@@ -686,6 +686,20 @@
 
             header('Content-type: application/json');
             echo json_encode($t, JSON_PRETTY_PRINT);
+        }
+
+        public function get_statement_of_accounts() {
+            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id GROUP BY tsd.sales_id ORDER BY tsp.payment_date ASC");
+            return $query;
+        }
+
+        public function generate_report_soa($data) {
+            $company = $data['company_soa'];
+            $from = $data['from_soa'];
+            $to = $data['to_soa'];
+
+            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id WHERE tsd.sales_company = '$company' AND tsd.sales_date BETWEEN '$from' AND '$to' GROUP BY tsd.sales_id");
+            return $query;
         }
 
         public function post($data) {

@@ -13,8 +13,8 @@
 				<div class="breadcrumb">
 					<?php $controller = $data['user']->role_id == 1 ? 'admin' : ($data['user']->role_id == 2 ? 'employee' : null);?>
 					<a href="<?=URL.$controller?>/dashboard" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
-					<span class="breadcrumb-item">Expense</span>
 					<span class="breadcrumb-item">Reports</span>
+					<span class="breadcrumb-item">Expense</span>
 					<span class="breadcrumb-item active">Monthly and Yearly Expense Report</span>
 				</div>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
