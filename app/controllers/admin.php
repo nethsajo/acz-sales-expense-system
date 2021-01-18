@@ -308,7 +308,7 @@
 						</tr>';
 					foreach($expense_monthly_report as $row) {
 						$date = $row['expense_date'];
-						$monthly_sum_total = $row['sum_total'];
+						$monthly_sum_total += $row['sum_total'];
 						$tbl .= '
 						<tr>
 							<td style="border:1px solid #000">'.$row['expense_cvno'].'</td>
