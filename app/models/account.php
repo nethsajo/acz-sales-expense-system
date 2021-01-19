@@ -535,27 +535,20 @@
             $from   = $data['from'];
             $to     = $data['to'];
 
-            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id WHERE td.expense_check_date BETWEEN '$from' AND '$to' GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC");
+            $query = $this->db->query("SELECT td.expense_check_date, td.expense_cn, td.expense_vendor, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id WHERE (td.expense_check_date >= '$from' AND  td.expense_check_date <= '$to') GROUP BY td.expense_cn, td.expense_check_date ORDER BY td.expense_check_date ASC");
             return $query;
         }
 
-        public function get_monthly_yearly_expense_report() {
+        public function get_expense_report() {
             $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_vendor, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id GROUP BY ted.expense_check_date ORDER BY ted.expense_check_date ASC");
             return $query;
         }
 
-        public function generate_monthly_yearly_expense_report($data) {
-            $from_month  = $data['from_month'];
-            $from_year   = $data['from_year'];
+        public function generate_expense_report($data) {
+            $from  = $data['expense_start_date'];
+            $to    = $data['expense_end_date'];
 
-            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE MONTH(ted.expense_check_date) = '$from_month' AND YEAR(ted.expense_check_date) = '$from_year' AND te.expense_remarks = 'RELEASED' GROUP BY ted.expense_check_date");
-            return $query;
-        }
-
-        public function get_expense_yearly_report($data) {
-            $from_year   = $data['from_year'];
-
-            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE YEAR(ted.expense_check_date) = '$from_year' AND te.expense_remarks = 'RELEASED' GROUP BY ted.expense_check_date");
+            $query = $this->db->query("SELECT ted.expense_cvno, ted.expense_cn, ted.expense_check_date, ted.expense_date, ted.expense_tin, ted.expense_si, ted.expense_or, SUM(te.expense_total) AS sum_total FROM tbl_expense_details AS ted INNER JOIN tbl_expense_transactions AS te ON ted.expense_id = te.expense_details_id WHERE (ted.expense_check_date >= '$from' AND ted.expense_check_date <= '$to') AND te.expense_remarks = 'RELEASED' GROUP BY ted.expense_check_date");
             return $query;
         }
 
@@ -688,8 +681,8 @@
             echo json_encode($t, JSON_PRETTY_PRINT);
         }
 
-        public function get_statement_of_accounts() {
-            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id GROUP BY tsd.sales_id ORDER BY tsp.payment_date ASC");
+        public function get_sales_report() {
+            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance, tsp.payment_remarks FROM tbl_sales_details AS tsd LEFT JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id GROUP BY tsd.sales_id");
             return $query;
         }
 
@@ -698,7 +691,15 @@
             $from = $data['from_soa'];
             $to = $data['to_soa'];
 
-            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id WHERE tsd.sales_company = '$company' AND tsd.sales_date BETWEEN '$from' AND '$to' GROUP BY tsd.sales_id");
+            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id WHERE (tsd.sales_date >= '$from' AND tsd.sales_date <= '$to') AND tsd.sales_company = '$company' GROUP BY tsd.sales_id");
+            return $query;
+        }
+
+        public function generate_sales_report($data) {
+            $from = $data['start_date'];
+            $to = $data['end_date'];
+
+            $query = $this->db->query("SELECT tsd.sales_so, tsd.sales_dr, tsd.sales_si, tsd.sales_po, tsd.sales_date, tsd.sales_company, tsd.sales_particulars, tsd.sales_net_amount, SUM(tsp.payment_amount) AS amount_paid, tsp.payment_date, tsd.sales_balance, tsp.payment_remarks FROM tbl_sales_details AS tsd LEFT JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id WHERE (tsd.sales_date >= '$from' AND tsd.sales_date <= '$to') GROUP BY tsd.sales_id");
             return $query;
         }
 

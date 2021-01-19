@@ -764,6 +764,8 @@ function view_sales(sales_id) {
             modal.find($('#sales_so')).val(data.sales_so);
             modal.find($('#sales_dr')).val(data.sales_dr);
             modal.find($('#sales_si')).val(data.sales_si);
+            modal.find($('#sales_company')).val(data.sales_company);
+            modal.find($('#sales_cp')).val(data.sales_cp);
             modal.find($('#sales_particulars')).val(data.sales_particulars);
             modal.find($('#sales_media')).val(data.sales_media);
             modal.find($('#sales_width')).val(data.sales_width);

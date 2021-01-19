@@ -25,31 +25,20 @@
 	<div class="content">
 		<div class="card">
 			<div class="card-body">
-				<form name="formCheckMonitoring" method="POST" action="<?=URL?>admin/reports" autocomplete="off" novalidate> 
+				<form name="formCheckMonitoring" method="POST" action="<?=URL?>admin/monitoring_report" autocomplete="off" novalidate> 
 					<div class="row">
-						<div class="col-md-5">
+						<div class="col-xl-6 col-md-8">
 							<div class="form-group">
-								<label>From:</label>
-								<div class="input-group">
-									<span class="input-group-prepend">
-										<span class="input-group-text"><i class="icon-calendar22"></i></span>
-									</span>
-									<input type="date" class="form-control" name="from" id="from">
-								</div>
+                            	<input type="hidden" id="from" name="from">
+                            	<input type="hidden" id="to" name="to">
+                                <label class="d-block">Select date: </label>
+                                <button type="button" class="btn btn-light daterange-predefined" id="monitoring_daterange">
+                                    <i class="icon-calendar22 mr-2"></i>
+                                    <span></span>
+                                </button>
 							</div>
 						</div>
-						<div class="col-md-5">
-							<div class="form-group">
-								<label>To:</label>
-								<div class="input-group">
-									<span class="input-group-prepend">
-										<span class="input-group-text"><i class="icon-calendar22"></i></span>
-									</span>
-									<input type="date" class="form-control" name="to" id="to">
-								</div>
-							</div>
-						</div>
-						<div class="col-md-2">
+						<div class="col-xl-2 ml-auto col-auto">
 							<div class="form-group">
 								<label>&nbsp;</label>
 								<button type="submit" class="btn bg-green btn-block">Print <i class="icon-printer position-right ml-2"></i></button>

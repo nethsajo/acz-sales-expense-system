@@ -3,7 +3,7 @@
 	<div class="page-header page-header-light">
 		<div class="page-header-content header-elements-md-inline">
 			<div class="page-title d-flex">
-				<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Expense</span> - Monthly and Yearly Report</h4>
+				<h4><i class="icon-arrow-left52 mr-2"></i> <span class="font-weight-semibold">Expense</span> - Daily, Weekly, Monthly and Yearly Report</h4>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 			</div>
 		</div>
@@ -15,7 +15,7 @@
 					<a href="<?=URL.$controller?>/dashboard" class="breadcrumb-item"><i class="icon-home2 mr-2"></i> Home</a>
 					<span class="breadcrumb-item">Reports</span>
 					<span class="breadcrumb-item">Expense</span>
-					<span class="breadcrumb-item active">Monthly and Yearly Expense Report</span>
+					<span class="breadcrumb-item active">Daily, Weekly, Monthly and Yearly</span>
 				</div>
 				<a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
 			</div>
@@ -27,32 +27,18 @@
 			<div class="card-body">
 				<form name="formMonthlyExpenseReport" method="POST" action="<?=URL?>admin/expense_generate_report" novalidate> 
 					<div class="row">
-						<div class="col-xl-5 col-md-4">
+						<div class="col-xl-6 col-md-8">
 							<div class="form-group">
-								<label>Month:</label>
-								<select id="from_month" name="from_month" class="form-control" required>
-                                    <option value="" disabled selected>Select month</option>
-                                    <?php $months = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"); ?>
-                                    <?php foreach ($months as $key => $value) : ?>
-                                        <?php $numeric_month = $key + 1; ?>
-                                        <option value="<?=$numeric_month;?>"><?=$value;?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                            	<input type="hidden" id="expense_start_date" name="expense_start_date">
+                            	<input type="hidden" id="expense_end_date" name="expense_end_date">
+                                <label class="d-block">Select date: </label>
+                                <button type="button" class="btn btn-light daterange-predefined" id="expense_daterange">
+                                    <i class="icon-calendar22 mr-2"></i>
+                                    <span></span>
+                                </button>
 							</div>
 						</div>
-                        <div class="col-xl-5 col-md-4">
-							<div class="form-group">
-								<label>Year:</label>
-								<select id="from_year" name="from_year" class="form-control" required>
-                                    <option value="" disabled selected>Select year</option>
-                                    <?php $start_year = 2020; ?>
-                                    <?php for($start_year; $start_year <= date("Y"); $start_year++) : ?>
-                                        <option value="<?=$start_year;?>"><?=$start_year;?></option>
-                                    <?php endfor; ?>
-                                </select>
-							</div>
-						</div>
-						<div class="col-xl-2 col-md-4">
+						<div class="col-xl-2 ml-auto col-auto">
 							<div class="form-group">
 								<label>&nbsp;</label>
 								<button type="submit" class="btn bg-green btn-block">Print <i class="icon-printer position-right ml-2"></i></button>

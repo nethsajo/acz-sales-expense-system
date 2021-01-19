@@ -11,12 +11,17 @@
 	var days = Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
 	
 	if(days > 0) {
-		var days_late = days_deadline-days;
-		var opacity = (days_late*100/days_deadline)/100;
+		var days_late = days_deadline - days;
+		var opacity = (days_late * 100 / days_deadline) / 100;
 			opacity = (opacity < 0) ? 0 : opacity;
 			opacity = (opacity > 1) ? 1 : opacity;
+		
 		if(opacity >= 0 && opacity <= 1) {
-			document.getElementsByTagName("BODY")[0].style.opacity = opacity;
+			document.getElementsByTagName("body")[0].style.opacity = opacity;
         }
 	}
+	
+	console.log(utc1);
+	console.log(utc2);
+	console.log(days);
 })()

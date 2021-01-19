@@ -13,6 +13,7 @@
 
         <!-- Theme JS files -->
         <script src="<?=ASSETS?>js/plugins/ui/moment/moment.min.js"></script>
+	    <script src="<?=ASSETS?>js/plugins/pickers/daterangepicker.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/datatables.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/buttons.min.js"></script>
         <script src="<?=ASSETS?>js/plugins/tables/datatables/extensions/responsive.min.js"></script>
@@ -110,6 +111,11 @@
                 implement_employee_sales_datatable();
                 implement_payment_datatable();
                 implement_soa_datatable();
+                implement_sales_report_datatable();
+                implement_sales_daterange();
+                implement_soa_datarange();
+                implement_monitoring_daterange();
+                implement_expense_daterange();
             });
         </script>
     </body>

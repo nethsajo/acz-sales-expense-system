@@ -155,7 +155,7 @@
 		public function soa() {
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Statement of Accounts';
-			$data['soa'] = $this->model('account')->get_statement_of_accounts();
+			$data['soa'] = $this->model('account')->get_sales_report();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -174,8 +174,8 @@
 				$search = array('company_soa' => $company, 'from_soa' => $from, 'to_soa' => $to);
 				$soa_report = $this->model('account')->generate_report_soa($search);
 				
-				$from = date('F d, Y',strtotime($from));
-				$to  = date('F d, Y',strtotime($to));
+				$from_date = date('F d, Y',strtotime($from));
+				$to_date  = date('F d, Y',strtotime($to));
 
 				$pdf = new TCPDF('P','mm','Legal');
 				$pdf->SetPrintHeader(false);
@@ -195,9 +195,9 @@
 				$pdf->SetFont('helvetica','B',15);
 				$pdf->cell(190,5,'STATEMENT OF ACCOUNT',0,1,'C');
 				$pdf->SetFont('helvetica','',10);
-				$pdf->cell(190,5,'Date : From '.$from.' to '.$to.'',0,1,'C');
+				$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
 				$pdf->cell(190,5,'',0,1,'C');
-				$pdf->SetFont('helvetica','B',15);
+				$pdf->SetFont('helvetica','B',13);
 				$pdf->cell(190, 5, 'Company: '.$company, 0, 1, 'C');
 				$pdf->cell(190,5,'',0,1,'C');
 				$pdf->SetFont('helvetica','B',10);
@@ -212,8 +212,13 @@
 							<th style="border:1px solid #000">DATE PAID</th>
 							<th style="border:1px solid #000">BALANCE</th>
 						</tr>';
+					$sum_net_amount = 0;
+					$sum_amount_paid = 0; 
+					$sum_balance = 0;
 					foreach($soa_report as $row) {
 						$date = $row['sales_date'];
+						$sum_net_amount += $row['sales_net_amount'];
+						$sum_amount_paid += $row['amount_paid'];
 						$sum_balance += $row['sales_balance'];
 						$tbl .= '
 						<tr>
@@ -229,9 +234,105 @@
 				ob_end_clean();
 				$pdf->writeHTML($tbl, true, false, false, false, '');
 				$pdf->SetFont('helvetica','B',10);
-				$pdf->cell(165, 8, 'Total Balance', 1, 0);
-				$pdf->cell(25, 8, number_format($sum_balance, 2), 1, 1,'C');
-				$pdf->Output('SOA-'.$company.'-'.$from.'-'.$to.'.pdf', 'I'); 
+				$pdf->cell(165,8,'Total of Net Amount Due',1,0);
+				$pdf->cell(25,8,number_format($sum_net_amount, 2), 1, 1);
+				$pdf->cell(165,8,'Total of Payments',1,0);
+				$pdf->cell(25,8,number_format($sum_amount_paid, 2), 1, 1);
+				$pdf->cell(165,8,'Total of Balance to Date',1,0);
+				$pdf->cell(25,8,number_format($sum_balance, 2), 1, 1);
+				$pdf->Output('SOA-'.$company.'-'.$from_date.'-'.$to_date.'.pdf', 'I'); 
+			}
+		}
+
+		public function filter_sales_report() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Sales Summary Report';
+			$data['report'] = $this->model('account')->get_sales_report();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/admin/sales-generate-report',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+
+		public function sales_generate_report() {
+			if(isset($_POST['start_date']) && ($_POST['end_date'])) {
+				$start_date = $_POST['start_date'];
+				$end_date = $_POST['end_date'];
+
+				$range = array('start_date' => $start_date, 'end_date' => $end_date);
+				$sales_report = $this->model('account')->generate_sales_report($range);
+
+				$from_date = date('F d, Y',strtotime($start_date));
+				$to_date  = date('F d, Y',strtotime($end_date));
+
+				$pdf = new TCPDF('P','mm','Legal');
+				$pdf->SetPrintHeader(false);
+				$pdf->SetPrintFooter(false);
+				$pdf->AddPage();
+				ob_start();
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
+				$pdf->SetFont('helvetica','B',13);
+				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',15);
+				$pdf->cell(190,5,'SUMMARY OF SALES',0,1,'C');
+				$pdf->SetFont('helvetica','',10);
+				$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
+				$pdf->cell(190,5,'',0,1,'C');
+				$pdf->SetFont('helvetica','B',10);
+
+				$tbl .= '
+					<table style="border:1px solid #000">
+						<tr>
+							<th style="border:1px solid #000">Date</th>
+							<th style="border:1px solid #000; width: 65px;">DR # </th>
+							<th style="border:1px solid #000; width: 65px;">SI #</th>
+							<th style="border:1px solid #000; width: 100px;">Remarks</th>
+							<th style="border:1px solid #000">Net Amount</th>
+							<th style="border:1px solid #000">Amount Paid</th>
+							<th style="border:1px solid #000">Balance</th>
+						</tr>';
+					$sum_net_amount = 0;
+					$sum_amount_paid = 0; 
+					$sum_balance = 0;
+					foreach($sales_report as $row) {
+						$date = $row['sales_date'];
+						$sum_net_amount += $row['sales_net_amount'];
+						$sum_amount_paid += $row['amount_paid'];
+						$sum_balance += $row['sales_balance'];
+						$tbl .= '
+						<tr>
+							<td style="border:1px solid #000">'.$date = date( "Y-m-d", strtotime($date)).'</td>
+							<td style="border:1px solid #000">'.$row['sales_dr'].'</td>
+							<td style="border:1px solid #000">'.$row['sales_si'].'</td>
+							<td style="border:1px solid #000">'.$row['payment_remarks'].'</td>
+							<td style="border:1px solid #000">'.number_format($row['sales_net_amount'], 2).'</td>
+							<td style="border:1px solid #000">'.number_format($row['amount_paid'], 2).'</td>
+							<td style="border:1px solid #000">'.number_format($row['sales_balance'], 2).'</td>
+						</tr>';
+					}
+				$tbl .= '</table>'; 
+				ob_end_clean();
+				$pdf->writeHTML($tbl, true, false, false, false, '');
+				$pdf->SetFont('helvetica','B',10);
+				$pdf->cell(165,8,'Total of Net Amount Due',1,0);
+				$pdf->cell(25,8,number_format($sum_net_amount, 2), 1, 1);
+				$pdf->cell(165,8,'Total of Payments',1,0);
+				$pdf->cell(25,8,number_format($sum_amount_paid, 2), 1, 1);
+				$pdf->cell(165,8,'Total of Balance to Date',1,0);
+				$pdf->cell(25,8,number_format($sum_balance, 2), 1, 1);
+				$pdf->Output('SalesReport-'.$from_date.'-'.$to_date.'.pdf', 'I'); 
+			} else {
+				redirect('admin/filter_sales_report');
 			}
 		}
 		
@@ -265,7 +366,7 @@
 			$this->view('components/scripts',$data);
 		}
 
-		public function reports() {
+		public function monitoring_report() {
 			if(isset($_POST['from']) && ($_POST['to'])) {
 				$from 	= $_POST['from'];
 				$to		= $_POST['to'];
@@ -306,6 +407,7 @@
 							<th style="border:1px solid #000">VENDOR</th>
 							<th style="border:1px solid #000">SUM OF TOTAL</th>
 						</tr>';
+					$sum_total = 0;
 					foreach($check_monitoring as $row) {
 						$sum_total += $row['sum_total'];
 						$tbl .= '
@@ -316,7 +418,6 @@
 							<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
 						</tr>';
 					}
-				
 				$tbl .= '</table>'; 
 				ob_end_clean();
 				$pdf->writeHTML($tbl, true, false, false, false, '');
@@ -332,8 +433,8 @@
 
 		public function filter_expense_report() {
 			$data['token'] = $_SESSION['token'];
-			$data['title'] = 'Monthly and Yearly Expense Report';
-			$data['report'] = $this->model('account')->get_monthly_yearly_expense_report();
+			$data['title'] = 'Expense Summary Report';
+			$data['report'] = $this->model('account')->get_expense_report();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);
@@ -344,15 +445,15 @@
 		}
 
 		public function expense_generate_report() {
-			if(isset($_POST['from_month']) && ($_POST['from_year'])) {
-				$from_month = $_POST['from_month'];
-				$from_year	= $_POST['from_year'];
+			if(isset($_POST['expense_start_date']) && ($_POST['expense_end_date'])) {
+				$expense_start_date = $_POST['expense_start_date'];
+				$expense_end_date	= $_POST['expense_end_date'];
 
-				$range = array('from_month' => $from_month, 'from_year' => $from_year);
+				$range = array('expense_start_date' => $expense_start_date, 'expense_end_date' => $expense_end_date);
+				$expense_report = $this->model('account')->generate_expense_report($range);
 
-				$expense_monthly_report = $this->model('account')->generate_monthly_yearly_expense_report($range);
-	
-				$month = date("F", mktime(0, 0, 0, $from_month, 10));
+				$from_date = date('F d, Y',strtotime($expense_start_date));
+				$to_date  = date('F d, Y',strtotime($expense_end_date));
 			
 				$pdf = new TCPDF('P','mm','Legal');
 				$pdf->SetPrintHeader(false);
@@ -372,7 +473,7 @@
 				$pdf->SetFont('helvetica','B',15);
 				$pdf->cell(190,5,'SUMMARY OF EXPENSES',0,1,'C');
 				$pdf->SetFont('helvetica','B',10);
-				$pdf->cell(190,5,''.$month.' '.$from_year.'',0,1,'C');
+				$pdf->cell(190,5,'Date : From '.$from_date.' to '.$to_date.'',0,1,'C');
 				$pdf->cell(190,5,'',0,1,'C');
 				$pdf->SetFont('helvetica','B', 10);
 	
@@ -389,9 +490,10 @@
 							<th style="border:1px solid #000">OR</th>
 							<th style="border:1px solid #000">Sum of Total</th>
 						</tr>';
-					foreach($expense_monthly_report as $row) {
+					$sum_total = 0;
+					foreach($expense_report as $row) {
 						$date = $row['expense_date'];
-						$monthly_sum_total += $row['sum_total'];
+						$sum_total += $row['sum_total'];
 						$tbl .= '
 						<tr>
 							<td style="border:1px solid #000">'.$row['expense_cvno'].'</td>
@@ -410,73 +512,8 @@
 				$pdf->writeHTML($tbl, true, false, false, false, '');
 				$pdf->SetFont('helvetica','B',10);
 				$pdf->cell(165, 8, 'Grand Total', 1, 0);
-				$pdf->cell(25, 8, number_format($monthly_sum_total, 2), 1, 1,'C');
-				$pdf->Output('Expense-Report-'.$month.'-'.$from_year.'.pdf', 'I');
-
-			} else if(!isset($_POST['from_month']) && isset($_POST['from_year'])) {
-				$from_year	= $_POST['from_year'];
-
-				$range = array('from_year' => $from_year);
-
-				$expense_yearly_report = $this->model('account')->get_expense_yearly_report($range);
-
-				$pdf = new TCPDF('P','mm','Legal');
-				$pdf->SetPrintHeader(false);
-				$pdf->SetPrintFooter(false);
-				$pdf->AddPage();
-				ob_start();
-				$pdf->SetFont('helvetica','B',10);
-				$pdf->Image('http://localhost/acz-thesis/assets/images/acz.png', 20, 12, 20, 20, '', '', '', true, 1000);
-				$pdf->SetFont('helvetica','B',13);
-				$pdf->cell(190,5,'ACZ Digital and Printing Services', 0, 1,'C');
-				$pdf->SetFont('helvetica','',10);
-				$pdf->cell(190,5,'No. 20 Silver St., Juana Complex 3A Brgy. San Francisco, City of Binãn, Laguna',0,1,'C');
-				$pdf->SetFont('helvetica','B',10);
-				$pdf->cell(190,5,'Contact No. 632-529-0303 | 0923-741-0890',0,1,'C');
-				$pdf->cell(190,5,'',0,1,'C');
-				$pdf->cell(190,5,'',0,1,'C');
-				$pdf->SetFont('helvetica','B',15);
-				$pdf->cell(190,5,'SUMMARY OF EXPENSES',0,1,'C');
-				$pdf->SetFont('helvetica','',10);
-				$pdf->cell(190,5,''.$from_year.'',0,1,'C');
-				$pdf->cell(190,5,'',0,1,'C');
-				$pdf->SetFont('helvetica','B',10);
-				$tbl .= '
-					<table style="border:1px solid #000">
-						<tr>
-							<th style="border:1px solid #000">Check Voucher</th>
-							<th style="border:1px solid #000">Check Number</th>
-							<th style="border:1px solid #000">Check Date</th>
-							<th style="border:1px solid #000">Date</th>
-							<th style="border:1px solid #000">Vendor</th>
-							<th style="border:1px solid #000">TIN</th>
-							<th style="border:1px solid #000">SI</th>
-							<th style="border:1px solid #000">OR</th>
-							<th style="border:1px solid #000">Sum of Total</th>
-						</tr>';
-					foreach($expense_yearly_report as $row) {
-						$date = $row['expense_date'];
-						$yearly_sum_total += $row['sum_total'];
-						$tbl .= '
-						<tr>
-							<td style="border:1px solid #000">'.$row['expense_cvno'].'</td>
-							<td style="border:1px solid #000">'.$row['expense_cn'].'</td>
-							<td style="border:1px solid #000">'.$row['expense_check_date'].'</td>
-							<td style="border:1px solid #000">'.$date = date( "m-d-Y", strtotime($date)).'</td>
-							<td style="border:1px solid #000">'.$row['expense_vendor'].'</td>
-							<td style="border:1px solid #000">'.$row['expense_tin'].'</td>
-							<td style="border:1px solid #000">'.$row['expense_si'].'</td>
-							<td style="border:1px solid #000">'.$row['expense_or'].'</td>
-							<td style="border:1px solid #000">'.number_format($row['sum_total'], 2).'</td>
-						</tr>';
-					}
-				$tbl .= '</table>'; 
-				ob_end_clean();
-				$pdf->writeHTML($tbl, true, false, false, false, '');
-				$pdf->SetFont('helvetica','B',10);
-				$pdf->cell(165, 8, 'Grand Total', 1, 0);
-				$pdf->cell(25, 8, number_format($yearly_sum_total, 2), 1, 1,'C');
-				$pdf->Output('Expense-Report-'.$from_year.'.pdf', 'I');
+				$pdf->cell(25, 8, number_format($sum_total, 2), 1, 1,'C');
+				$pdf->Output('Expense-Report-'.$from_date.'-'.$to_date.'.pdf', 'I');
 			} else {
 				redirect('admin/filter_expense_report');
 			}

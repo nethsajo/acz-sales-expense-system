@@ -71,13 +71,14 @@
 									<a href="#" class="nav-link">Sales</a>
 									<ul class="nav nav-group-sub">
 										<li class="nav-item"><a href="<?=URL?>admin/soa" class="nav-link <?= $data['title'] == 'Statement of Accounts' ? 'active' : '';?>">Statement of Accounts</a></li>
+										<li class="nav-item"><a href="<?=URL?>admin/filter_sales_report" class="nav-link <?= $data['title'] == 'Sales Summary Report' ? 'active' : '';?>">Daily, Weekly, Monthly and Yearly</a></li>
 									</ul>
 								</li>
 								<li class="nav-item nav-item-submenu">
 									<a href="#" class="nav-link">Expenses</a>
 									<ul class="nav nav-group-sub">
 										<li class="nav-item"><a href="<?=URL?>admin/monitoring" class="nav-link <?= $data['title'] == 'Check Monitoring' ? 'active' : '';?>">Check Monitoring</a></li>
-										<li class="nav-item"><a href="<?=URL?>admin/filter_expense_report" class="nav-link <?= $data['title'] == 'Monthly and Yearly Expense Report' ? 'active' : '';?>">Monthly and Yearly Report</a></li>
+										<li class="nav-item"><a href="<?=URL?>admin/filter_expense_report" class="nav-link <?= $data['title'] == 'Expense Summary Report' ? 'active' : '';?>">Daily, Weekly, Monthly and Yearly</a></li>
 									</ul>
 								</li>
 							</ul>
