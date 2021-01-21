@@ -49,7 +49,8 @@
 
             toastr_option();
 
-            graph();
+            graph_sales_expense();
+            graph_expense_category();
             graph_collected_uncollected();
             graph_media();
         </script>

@@ -46,6 +46,19 @@
 			$this->view('components/scripts',$data);
 		}
 
+		public function payments() {
+			$data['token'] = $_SESSION['token'];
+			$data['title'] = 'Payments';
+			$data['payments'] = $this->model('account')->get_all_payment_details();
+			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
+			$this->view('components/header',$data);
+			$this->view('components/top-bar',$data);
+			$this->view('components/sidebar',$data);
+			$this->view('pages/employee/payments',$data);
+			$this->view('components/footer',$data);
+			$this->view('components/scripts',$data);
+		}
+
 		public function InsertOrUpdateSales() {
 			if(isset($_SESSION['token']) == $this->input->post('token')) {
 				$data = array(

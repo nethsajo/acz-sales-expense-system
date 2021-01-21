@@ -301,7 +301,14 @@
 						</div>
 						<div class="form-group">
 							<label for="">Remark <small>*</small></label>
-							<input type="text" id="payment_remark" name="payment_remark" placeholder="Remark" class="form-control">
+							<select id="payment_remark" name="payment_remark" class="form-control" ng-model="payment_remark" required>
+								<option value="" disabled selected>Select your option</option>
+								<option value="DOWN PAYMENT">Down Payment</option>
+								<option value="PAID">Paid</option>
+							</select>
+							<span ng-messages="formPayment.payment_remark.$error" ng-if="formPayment.payment_remark.$dirty">
+								<strong ng-message="required" class="text-danger">This field is required.</strong>
+							</span>
 						</div>
 					</div>
 					<div class="modal-footer">

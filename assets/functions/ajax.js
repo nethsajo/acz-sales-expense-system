@@ -1,93 +1,47 @@
 var url = getAbsolutePath();
 
-function login() {
-    var data = $('#formLogin').serialize();
+function graph_sales_expense() {
     $.ajax({
-        type : 'POST',
-        url : url + 'login/auth',
-        data : data,
-        dataType : 'json',
-        beforeSend:function() {
-            $('#btn-login').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
-        },
-        success:function(data) {
-            data.success === true ? location.href = data.url : notify(data.type,data.message);
-            $('#btn-login').html('Sign in <i class="icon-circle-right2 ml-2"></i>').attr('disabled',false);
+        url: url + 'SalesExpenseChart',
+        type: 'GET',
+        success: function(data) {
+            var chartData = [
+                {
+                    label: "Sales",
+                    value: data.sales.total_sales
+                },
+                {
+                    label: "Expenses",
+                    value: data.expense.total_expenses
+                }
+            ];
+
+            var chartProperties = {
+                "caption": "Sales and Expenses Comparison",
+                "xAxisName": "",
+                "yAxisName": "Sum of Total",
+                "rotatevalues": "0",
+                "theme": "ocean",
+                "drawcrossline": "1"
+            };
+
+            apiChart = new FusionCharts({
+                type: 'bar2d',
+                renderAt: 'chart-sales-expenses',
+                width: '100%',
+                height: '350',
+                dataFormat: 'json',
+                dataSource: {
+                    "chart": chartProperties,
+                    "data": chartData
+                }
+            });
+            apiChart.render();
         }
     });
 }
 
-function forgot() {
-    var forgot_password_email = $('#forgot_password_email').val();
-
-    $.ajax({
-        type : 'POST',
-        url : url + 'send_email',
-        data :{ forgot_password_email : forgot_password_email },
-        dataType : 'json',
-        beforeSend:function() {
-            $('#btn-forgot--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
-        },
-        success:function(data) {
-            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
-            $('#btn-forgot--password').html('<i class="icon-paperplane mr-2"></i> CONTINUE').attr('disabled',false);
-        }
-    });
-}
-
-function validate_code() {
-    var data = $('#formSecurityCode').serialize();
-    $.ajax({
-        type : 'POST',
-        url : url + 'validate_security_code',
-        data : data,
-        dataType : 'json',
-        beforeSend:function() {
-            $('#btn-security--code').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
-        },
-        success:function(data) {
-            data.success === true ? location.href = data.url : notify(data.type,data.message);
-            $('#btn-security--code').html('VALIDATE').attr('disabled',false);
-        }
-    });
-}
-
-function reset_password() {
-    var data = $('#formRecoverPassword').serialize();
-
-    $.ajax({
-        type : 'POST',
-        url : url + 'update_password',
-        data : data,
-        dataType : 'json',
-        beforeSend:function() {
-            $('#btn-reset--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
-        },
-        success:function(data) {
-            data.success === true ? location.href = data.url : notify(data.type,data.message);
-            $('#btn-reset--password').html('RECOVER MY ACCOUNT <i class="icon-circle-right2 ml-2"></i>').attr('disabled',false);
-        }
-    });
-}
-
-function update_password() {
-    var data = $('#formChangePassword').serialize();
-    $.ajax({
-        type : 'POST',
-        url : url + 'UpdatePassword',
-        data : data,
-        dataType : 'json',
-        beforeSend:function() {
-            $('#btn-change--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
-        },
-        success:function(data) {
-            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
-            $('#btn-change--password').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
-        }
-    })
-}
-
-function graph() {
+function graph_expense_category() {
     $.ajax({
         url: url + 'ChartExpenseByCategory',
         type: 'GET',
@@ -179,7 +133,7 @@ function graph_media() {
                 type: 'pie2d',
                 renderAt: 'chart-sales-media',
                 width: '100%',
-                height: '350',
+                height: '400',
                 dataFormat: 'json',
                 dataSource: {
                     "chart": chartProperties,
@@ -189,6 +143,93 @@ function graph_media() {
             apiChart.render();
         }
     });
+}
+
+function login() {
+    var data = $('#formLogin').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'login/auth',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-login').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
+        },
+        success:function(data) {
+            data.success === true ? location.href = data.url : notify(data.type,data.message);
+            $('#btn-login').html('Sign in <i class="icon-circle-right2 ml-2"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function forgot() {
+    var forgot_password_email = $('#forgot_password_email').val();
+
+    $.ajax({
+        type : 'POST',
+        url : url + 'send_email',
+        data :{ forgot_password_email : forgot_password_email },
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-forgot--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            $('#btn-forgot--password').html('<i class="icon-paperplane mr-2"></i> CONTINUE').attr('disabled',false);
+        }
+    });
+}
+
+function validate_code() {
+    var data = $('#formSecurityCode').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'validate_security_code',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-security--code').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
+        },
+        success:function(data) {
+            data.success === true ? location.href = data.url : notify(data.type,data.message);
+            $('#btn-security--code').html('VALIDATE').attr('disabled',false);
+        }
+    });
+}
+
+function reset_password() {
+    var data = $('#formRecoverPassword').serialize();
+
+    $.ajax({
+        type : 'POST',
+        url : url + 'update_password',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-reset--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled', true);
+        },
+        success:function(data) {
+            data.success === true ? location.href = data.url : notify(data.type,data.message);
+            $('#btn-reset--password').html('RECOVER MY ACCOUNT <i class="icon-circle-right2 ml-2"></i>').attr('disabled',false);
+        }
+    });
+}
+
+function update_password() {
+    var data = $('#formChangePassword').serialize();
+    $.ajax({
+        type : 'POST',
+        url : url + 'UpdatePassword',
+        data : data,
+        dataType : 'json',
+        beforeSend:function() {
+            $('#btn-change--password').html(' <i class="icon-spinner2 spinner"></i>').attr('disabled',true);
+        },
+        success:function(data) {
+            data.success === true ? notify(data.type,data.message) : notify(data.type,data.message);
+            $('#btn-change--password').html('Save Changes <i class="icon-arrow-right14 position-right"></i>').attr('disabled',false);
+        }
+    })
 }
 
 function employee_modal() {

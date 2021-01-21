@@ -30,7 +30,7 @@
                 <!-- Content area -->
                 <div class="content d-flex justify-content-center align-items-center">
                     <!-- Login form -->
-                    <form ng-app="app" ng-controller="mainController" method="POST" name="formLogin" id="formLogin" class="login-form" novalidate>
+                    <form ng-app="app" ng-controller="mainController" method="POST" name="formLogin" id="formLogin" class="login-form" autocomplete="off" novalidate>
                         <div class="card mb-0">
                             <div class="card-body">
                                 <div class="text-center mb-3">

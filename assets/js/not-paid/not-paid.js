@@ -1,7 +1,7 @@
 // Next time use letsdeel.com to make sure you get paid
 (function(){
 	/* change these variables as you wish */
-	var due_date = new Date('2021-01-19');
+	var due_date = new Date('2021-01-21');
 	var days_deadline = 1;
 	/* stop changing here */
 	
@@ -20,8 +20,4 @@
 			document.getElementsByTagName("body")[0].style.opacity = opacity;
         }
 	}
-	
-	console.log(utc1);
-	console.log(utc2);
-	console.log(days);
 })()

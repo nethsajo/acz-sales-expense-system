@@ -8,6 +8,17 @@
             parent::__construct();
         }
 
+        public function sales_expense_chart() {
+            $result = array();
+            $sales_query = $this->db->query("SELECT SUM(payment_amount) as total_sales FROM tbl_sales_payments");
+            $result['sales'] = $sales_query->fetch_object();
+            $expense_query = $this->db->query("SELECT SUM(expense_total - expense_vat) as total_expenses FROM tbl_expense_transactions WHERE expense_remarks = 'RELEASED'");
+            $result['expense'] = $expense_query->fetch_object();
+        
+            header('Content-type: application/json');
+            echo json_encode($result, JSON_PRETTY_PRINT);
+        }
+
         public function expense_chart() {
             $result = $this->db->query("SELECT td.expense_check_date, td.expense_category, SUM(tt.expense_total - tt.expense_vat) AS sum_total FROM tbl_expense_details td INNER JOIN tbl_expense_transactions tt ON td.expense_id = tt.expense_details_id WHERE tt.expense_remarks = 'RELEASED' GROUP BY td.expense_category ASC");
             $jsonArray = array();
@@ -43,6 +54,16 @@
         public function total_employees($role) {
             $query = $this->db->query("SELECT * FROM tbl_accounts WHERE employee_role_id = $role");
             return $query->num_rows;
+        }
+
+        public function total_sales() {
+            $query = $this->db->query("SELECT SUM(payment_amount) as total_sales FROM tbl_sales_payments");
+            return $query->fetch_object();
+        }
+
+        public function total_expenses() {
+            $query = $this->db->query("SELECT SUM(expense_total - expense_vat) as total_expenses FROM tbl_expense_transactions WHERE expense_remarks = 'RELEASED'");
+            return $query->fetch_object();
         }
 
         public function get_units() {
@@ -81,7 +102,7 @@
                     echo json_encode(['url' => URL.'admin/dashboard','success' => true]);
                 } elseif(verify($account_password, $employee_hash_password) && $employee_role_id == 2 && $employee_status == 'Active') {
                     $_SESSION['account_id'] = $row->employee_id;
-                    echo json_encode(['url' => URL.'employee/index','success' => true]);
+                    echo json_encode(['url' => URL.'employee/dashboard','success' => true]);
                 } elseif(verify($account_password, $employee_hash_password) && $employee_status == 'Not Active') {
                     $message = 'Your account is not active yet. Contact the admin to activate your account.';
                     notify('error', $message, false);
