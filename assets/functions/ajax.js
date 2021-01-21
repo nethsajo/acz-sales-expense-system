@@ -80,11 +80,11 @@ function graph_collected_uncollected() {
             var chartData = [
                 {
                     label: "Collected",
-                    value: data.collected
+                    value: data.paid.collected
                 },
                 {
                     label: "Uncollected",
-                    value: data.uncollected
+                    value: data.balance.uncollected
                 }
             ];
 
@@ -917,17 +917,15 @@ function view_payment_detail(sales_id) {
                     total_amount += parseFloat(data.payments[i].payment_amount);
                 });
 
-                modal.find($('#sales_net_amount')).html('&#8369; ' + data.sales[0].sales_net_amount);
-                modal.find($('#total_paid')).html('&#8369; ' + total_amount.toFixed(2));
-                modal.find($('#total_balance')).html('&#8369; ' + data.sales[0].sales_balance);
+                modal.find($('#sales_net_amount')).html('&#x20b1; ' + data.sales[0].sales_net_amount);
+                modal.find($('#total_paid')).html('&#x20b1; ' + total_amount.toFixed(2));
+                modal.find($('#total_balance')).html('&#x20b1; ' + data.sales[0].sales_balance);
             } else {
-                $('#tbbody tbody').append("<tr><td colspan='3' class='text-center'>No result found</td></tr>");
+                $('#tbbody tbody').append("<tr><td colspan='3' class='text-center'>No results found</td></tr>");
             }
         }
     });
 }
-
-
 
 function notify(type,message) {
     Command: toastr[type](message)

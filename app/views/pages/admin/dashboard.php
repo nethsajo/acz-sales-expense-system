@@ -45,7 +45,7 @@
 						</div>
 
 						<div class="media-body text-right">
-							<h3 class="font-weight-semibold mb-0"><?=number_format($data['total_sales']->total_sales, 2);?></h3>
+							<h3 class="font-weight-semibold mb-0">&#x20b1; <?=number_format($data['total_sales']->total_sales, 2);?></h3>
 							<span class="text-uppercase font-size-sm text-muted">Total Sales</span>
 						</div>
 					</div>
@@ -59,7 +59,7 @@
 							<i class="icon-chart icon-3x text-blue-400"></i>
 						</div>
 						<div class="media-body text-right">
-							<h3 class="font-weight-semibold mb-0"><?=number_format($data['total_expenses']->total_expenses, 2);?></h3>
+							<h3 class="font-weight-semibold mb-0">&#x20b1; <?=number_format($data['total_expenses']->total_expenses, 2);?></h3>
 							<span class="text-uppercase font-size-sm text-muted">Total Expenses</span>
 						</div>
 					</div>

@@ -9,9 +9,27 @@
 			$this->input = $this->model('account');
 		}
 
+		public function SalesExpenseChart() {
+			$this->model('account')->sales_expense_chart();
+		}
+
+		public function ChartExpenseByCategory() {
+			$this->model('account')->expense_chart();
+		}
+
+		public function ChartCollectedUncollected() {
+			$this->model('account')->chart_collected_uncollected();
+		}
+
+		public function ChartSalesMedia() {
+			$this->model('account')->chart_sales_per_media();
+		}
+
 		public function index() {
 			$data['token'] = $_SESSION['token'];
 			$data['title'] = 'Dashboard';
+			$data['total_sales'] = $this->model('account')->total_sales();
+			$data['total_expenses'] = $this->model('account')->total_expenses();
 			$data['user'] = $this->model('account')->get_user_information($_SESSION['account_id']);
 			$this->view('components/header',$data);
 			$this->view('components/top-bar',$data);

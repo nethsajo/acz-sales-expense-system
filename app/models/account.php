@@ -33,9 +33,13 @@
         }
 
         public function chart_collected_uncollected() {
-            $result = $this->db->query("SELECT SUM(tsd.sales_balance) AS uncollected, SUM(tsp.payment_amount) AS collected FROM tbl_sales_details AS tsd INNER JOIN tbl_sales_payments AS tsp ON tsd.sales_id = tsp.sales_id");
+            $result = array();
+            $uncollected = $this->db->query("SELECT SUM(sales_balance) AS uncollected FROM tbl_sales_details");
+            $result['balance'] = $uncollected->fetch_object();
+            $collected = $this->db->query("SELECT SUM(payment_amount) AS collected FROM tbl_sales_payments");
+            $result['paid'] = $collected->fetch_object();
             header('Content-type: application/json');
-            echo json_encode($result->fetch_object());
+            echo json_encode($result, JSON_PRETTY_PRINT);
         }
 
         public function chart_sales_per_media() {
